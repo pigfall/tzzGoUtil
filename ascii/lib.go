@@ -2,7 +2,6 @@ package ascii
 
 import(
     "unicode/utf8"
-    "strings"
 )
 
 func IsASCII(b byte)bool{

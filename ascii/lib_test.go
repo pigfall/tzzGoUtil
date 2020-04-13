@@ -22,3 +22,18 @@ func TestIsAlha(t *testing.T){
         }
     }
 }
+
+func TestToLower(t *testing.T){
+    var upper = byte('A')
+    if ToLower(upper)!='a'{
+        t.Fatal("to lower failed")
+    }
+
+}
+func TestToUpper(t *testing.T){
+    var lower = byte('a')
+    if ToUpper(lower)!='A'{
+        t.Fatal("to upper failed")
+    }
+
+}
