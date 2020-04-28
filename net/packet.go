@@ -17,7 +17,7 @@ func Listen(){
     for device := range devices{
         log.Debugf("%#v\n",device)
     }
-    handler,err:=pcap.OpenLive("ethernet_32768",65536,true,pcap.BlockForever)
+    handler,err:=pcap.OpenLive("eth0",65536,true,pcap.BlockForever)
     if err != nil{
         log.Debug(err)
         return
