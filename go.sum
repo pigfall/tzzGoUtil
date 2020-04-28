@@ -1,4 +1,9 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/Peanuttown/gopacket v1.1.18-0.20200428075108-fda492226e7f h1:0P6JVF35dwHJr4glhEt/l5PiMVjzVKqzA0swRQrZnNk=
+github.com/Peanuttown/gopacket v1.1.18-0.20200428075108-fda492226e7f/go.mod h1:2+IQG5dmTy46H+60iF9PdpvaZf3bOrZMs26fOB+4Oe0=
+github.com/Peanuttown/gopacket v1.1.18-0.20200428082008-233ea0f8dcda h1:zIOMhNHnEcFlUFZvrKIKTJttt9sdgMZ4koapVGF5nYY=
+github.com/Peanuttown/gopacket v1.1.18-0.20200428082008-233ea0f8dcda/go.mod h1:XR5w4e3C4z5/+DGV3CSPcDp66wIXtg/Cks9EkSh6AtM=
+github.com/Peanuttown/tzzGoUtil v0.0.0-20200428064152-3d4f421a41a4/go.mod h1:h+7FAk4M+vTZ+VIvxK58BpQkJNLevSWe03eE7sEgOCQ=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/google/gopacket v1.1.17 h1:rMrlX2ZY2UbvT+sdz3+6J+pp2z+msCq9MxTU6ymxbBY=
