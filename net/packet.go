@@ -56,3 +56,4 @@ func Listen(netInterface string) (packetsChRet <-chan Packet, closeF func(), err
 	packetsChRet = packetsCh
 	return
 }
+
