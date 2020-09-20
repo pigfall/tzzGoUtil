@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"io"
 	golog "log"
 	"os"
 )
@@ -11,7 +12,45 @@ const callDepth = 3
 const (
 	DEBUG_PREFIX = "DEBUG"
 	ERROR_PREFIX = "ERROR"
+	INFO_PREFIX="INFO"
 )
+
+type Logger struct {
+	l *golog.Logger
+}
+
+func NewLogger() *Logger {
+	return &Logger{l: golog.New(os.Stdout, "", golog.Lshortfile|golog.LstdFlags)}
+}
+
+func (this *Logger) SetOutput(writer io.Writer){
+	this.l.SetOutput(writer)
+}
+func (this *Logger) Infof(format string,msg ...interface{}) {
+	this.printf(INFO_PREFIX,format,msg...)
+}
+
+func (this *Logger) Info(msg ...interface{}) {
+	this.print(INFO_PREFIX,msg)
+}
+
+
+
+func (this *Logger) Error(msg ...interface{}) {
+	this.print(ERROR_PREFIX, msg...)
+}
+
+func (this *Logger) Errorf(format string, msg ...interface{}) {
+	this.printf(ERROR_PREFIX, format, msg...)
+
+}
+func (this *Logger) printf(prefix string, format string, msg ...interface{}) {
+	this.l.Output(callDepth, fmt.Sprintf("%s: %s", prefix, fmt.Sprintf(format, msg...)))
+}
+
+func (this *Logger) print(prefix string, msg ...interface{}) {
+	this.l.Output(callDepth, fmt.Sprintln(prefix, ": ", msg))
+}
 
 var i *golog.Logger
 

@@ -10,4 +10,5 @@ require (
 	go.mongodb.org/mongo-driver v1.3.2
 	golang.org/x/sys v0.0.0-20200909081042-eff7692f9009
 	golang.org/x/tools/gopls v0.3.3 // indirect
+	gopkg.in/yaml.v2 v2.3.0 // indirect
 )

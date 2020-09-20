@@ -21,6 +21,10 @@ func (this *TunTapBase) Write(b []byte) (n int, err error) {
 	return this.DevFile.Write(b)
 }
 
+func (this *TunTapBase) Close(){
+	this.DevFile.Close()
+}
+
 func newTunTapBase(file *os.File) *TunTapBase {
 	return &TunTapBase{
 		DevFile: file,
