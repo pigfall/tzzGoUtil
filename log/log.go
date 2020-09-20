@@ -1,23 +1,44 @@
 package log
 
-import(
-    golog "log"
-    "os"
-    "fmt"
+import (
+	"fmt"
+	golog "log"
+	"os"
 )
 
-const callDepth =2
+const callDepth = 3
+
+const (
+	DEBUG_PREFIX = "DEBUG"
+	ERROR_PREFIX = "ERROR"
+)
 
 var i *golog.Logger
 
-func init(){
-    i = golog.New(os.Stdout, "tzzLog",golog.Lshortfile|golog.LstdFlags)
+func init() {
+	i = golog.New(os.Stdout, "tzzLog", golog.Lshortfile|golog.LstdFlags)
 }
 
-func Debug(msg ...interface{}){
-    i.Output(callDepth,fmt.Sprintln(msg...))
+func print(prefix string, msg ...interface{}) {
+	i.Output(callDepth, fmt.Sprintln(prefix, ":", msg))
 }
 
-func Debugf(format string,args ...interface{}){
-    i.Output(callDepth,fmt.Sprintf(format,args...))
+func printf(prefix string, format string, args ...interface{}) {
+	i.Output(callDepth, fmt.Sprintf("%s:%s", prefix, (fmt.Sprintf(format, args...))))
+}
+
+func Debug(msg ...interface{}) {
+	print(DEBUG_PREFIX, msg)
+}
+
+func Debugf(format string, args ...interface{}) {
+	printf(DEBUG_PREFIX, format, args...)
+}
+
+func Error(msg ...interface{}) {
+	print(ERROR_PREFIX, msg)
+}
+
+func Errorf(format string, args ...interface{}) {
+	printf(ERROR_PREFIX, format, args...)
 }
