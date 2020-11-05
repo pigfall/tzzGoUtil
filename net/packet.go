@@ -3,9 +3,9 @@ package net
 import (
 	"sync"
 
-	"github.com/Peanuttown/gopacket"
-	"github.com/Peanuttown/gopacket/layers"
-	"github.com/Peanuttown/gopacket/pcap"
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
+	"github.com/google/gopacket/pcap"
 	"github.com/Peanuttown/tzzGoUtil/log"
 )
 
@@ -56,4 +56,5 @@ func Listen(netInterface string) (packetsChRet <-chan Packet, closeF func(), err
 	packetsChRet = packetsCh
 	return
 }
+
 
