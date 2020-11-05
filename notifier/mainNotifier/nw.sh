@@ -1,4 +1,3 @@
 #!/bin/bash
-ADDR="127.0.0.1:10101"
-$*
-curl -d '{"title":"Done!","message":"${*}"}' http://${ADDR}
+${*}
+curl -d "{\"title\":\"Done!\",\"message\":\"${*}\"}" http://192.168.43.194:10101
