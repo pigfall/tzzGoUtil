@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"strings"
 )
 
 type DialCfg struct {
@@ -57,6 +58,58 @@ func (c *Client) Copy(local string, remote string) error {
 	)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func (c *Client) DownloadFile(local, remote string) error {
+	remoteFile, err := c.sftpClt.Open(remote)
+	if err != nil {
+		return err
+	}
+	defer remoteFile.Close()
+	if _, err := os.Stat(path.Dir(local)); err != nil {
+		os.MkdirAll(path.Dir(local), os.ModePerm)
+	}
+	localFile, err := os.Create(local)
+	if err != nil {
+		return err
+	}
+	defer localFile.Close()
+	_, err = io.Copy(localFile, remoteFile)
+	return err
+}
+
+func (c *Client) DownloadDir(local, remote string) error {
+	err := os.MkdirAll(local, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	walk := c.sftpClt.Walk(remote)
+	for walk.Step() {
+		info := walk.Stat()
+		filepath := walk.Path()
+		if info.IsDir() {
+			err = os.MkdirAll(path.Join(local, strings.TrimPrefix(filepath, remote)), os.ModePerm)
+			if err != nil {
+				return err
+			}
+		} else {
+			remoteFile, err := c.sftpClt.Open(filepath)
+			if err != nil {
+				return err
+			}
+			defer remoteFile.Close()
+			file, err := os.Create(path.Join(local, strings.TrimPrefix(filepath, remote)))
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+			_, err = io.Copy(file, remoteFile)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
