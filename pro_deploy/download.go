@@ -19,7 +19,10 @@ func DownloadProPkg(sshCli *ssh.Client, pkgPath string) error {
 func DownloadLicense(sshCli *ssh.Client) error {
 	fmt.Printf("开始下载 许可证\n")
 	return sshCli.DownloadDir(LICENSE_PATH, "/home/pstore/packages/other/common/certs/eicas-license")
+<<<<<<< HEAD
 
+=======
+>>>>>>> update
 }
 func DownloadCaCrt(sshCli *ssh.Client) error {
 	fmt.Printf("开始下载 证书 \n")
