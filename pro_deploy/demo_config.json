@@ -1,0 +1,28 @@
+{
+    "original":{
+        "addr":"172.16.1.10:22",
+        "ssh_user":"pstore",
+        "ssh_passwd":"eicas2019"
+    },
+    "pro_pkg_path":"/home/pstore/packages/other/fhmc-pro/fhmc-integration/unstable/amd64/fhmc-integration_v2.4.2.xg.ISBP-amd64-20201130.141907-git.8e2c71.tgz",
+    "pro_nodes":[
+        {
+            "hostname":"host82",
+            "ip":"172.16.2.82",
+            "ssh_user":"root",
+            "ssh_passwd":"123456"
+        },
+        {
+            "hostname":"host82",
+            "ip":"172.16.2.82",
+            "ssh_user":"root",
+            "ssh_passwd":"123456"
+        },
+        {
+            "hostname":"host82",
+            "ip":"172.16.2.82",
+            "ssh_user":"root",
+            "ssh_passwd":"123456"
+        }
+    ]
+}
