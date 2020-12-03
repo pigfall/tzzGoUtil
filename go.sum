@@ -2,6 +2,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/Peanuttown/gopacket v1.1.18-0.20200428082008-233ea0f8dcda h1:zIOMhNHnEcFlUFZvrKIKTJttt9sdgMZ4koapVGF5nYY=
 github.com/Peanuttown/gopacket v1.1.18-0.20200428082008-233ea0f8dcda/go.mod h1:XR5w4e3C4z5/+DGV3CSPcDp66wIXtg/Cks9EkSh6AtM=
 github.com/Peanuttown/tzzGoUtil v0.0.0-20200428064152-3d4f421a41a4/go.mod h1:h+7FAk4M+vTZ+VIvxK58BpQkJNLevSWe03eE7sEgOCQ=
+github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129 h1:gfAMKE626QEuKG3si0pdTRcr/YEbBoxY+3GOH3gWvl4=
+github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129/go.mod h1:u9UyCz2eTrSGy6fbupqJ54eY5c4IC8gREQ1053dK12U=
 github.com/c9s/goprocinfo v0.0.0-20200311234719-5750cbd54a3b h1:djdFzvwQ8aPNEGiXLnV3i10hYxwFWBjimcGxmt5gDuo=
 github.com/c9s/goprocinfo v0.0.0-20200311234719-5750cbd54a3b/go.mod h1:uEyr4WpAH4hio6LFriaPkL938XnrvLpNPmQHBdrmbIE=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

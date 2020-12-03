@@ -1,6 +1,7 @@
 package ssh
 
 import (
+	"fmt"
 	"github.com/Peanuttown/tzzGoUtil/fs"
 	"github.com/pkg/sftp"
 	gossh "golang.org/x/crypto/ssh"
@@ -110,6 +111,34 @@ func (c *Client) DownloadDir(local, remote string) error {
 				return err
 			}
 		}
+	}
+	return nil
+}
+
+func (c *Client) CreateThenWrite(filepath string, reader io.Reader) error {
+	c.sftpClt.Remove(filepath)
+	file, err := c.sftpClt.Create(filepath)
+	if err != nil {
+		err = fmt.Errorf("创建文件 %s 失败: %v", filepath, err)
+		return err
+	}
+	defer file.Close()
+
+	_, err = io.Copy(file, reader)
+	if err != nil {
+		err = fmt.Errorf("写入文件 %s 失败: %v", filepath, err)
+	}
+	return err
+}
+
+func (c *Client) RemoveFile(filepath string) error {
+	session, err := c.NewSession()
+	if err != nil {
+		return err
+	}
+	out, err := session.CombinedOutput(fmt.Sprintf("rm %s", filepath))
+	if err != nil {
+		return fmt.Errorf("删除文件 %s 失败: %v , %s", filepath, err, string(out))
 	}
 	return nil
 }
