@@ -1,6 +1,8 @@
 package ssh
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"github.com/Peanuttown/tzzGoUtil/fs"
 	"github.com/pkg/sftp"
@@ -19,6 +21,8 @@ type DialCfg struct {
 type Client struct {
 	*gossh.Client
 	sftpClt *sftp.Client
+	cfg     *DialCfg
+	addr    string
 }
 
 func (c *Client) Close() {
@@ -33,6 +37,7 @@ func Dial(addr string, cfg *DialCfg) (*Client, error) {
 		HostKeyCallback: gossh.InsecureIgnoreHostKey(),
 	})
 	if err != nil {
+		err = fmt.Errorf("dial ssh addr :%s 失败: %w", fmt.Sprintf("%s@%s", cfg.User, addr), err)
 		return nil, err
 	}
 	sftpClt, err := sftp.NewClient(clt)
@@ -40,7 +45,12 @@ func Dial(addr string, cfg *DialCfg) (*Client, error) {
 		clt.Close()
 		return nil, err
 	}
-	return &Client{Client: clt, sftpClt: sftpClt}, nil
+	return &Client{
+			Client: clt, sftpClt: sftpClt,
+			cfg:  cfg,
+			addr: addr,
+		},
+		nil
 }
 
 func (c *Client) Copy(local string, remote string) error {
@@ -132,13 +142,95 @@ func (c *Client) CreateThenWrite(filepath string, reader io.Reader) error {
 }
 
 func (c *Client) RemoveFile(filepath string) error {
+	return c.do(func(session *Session) error {
+		out, err := session.CombinedOutput(fmt.Sprintf("rm %s", filepath))
+		if err != nil {
+			return fmt.Errorf("删除文件 %s 失败: %v , %s", filepath, err, string(out))
+		}
+		return nil
+	})
+}
+
+func (c *Client) do(f func(*Session) error) error {
 	session, err := c.NewSession()
 	if err != nil {
 		return err
 	}
-	out, err := session.CombinedOutput(fmt.Sprintf("rm %s", filepath))
+	defer session.Close()
+	return f(session)
+}
+
+func (c *Client) NewSession() (*Session, error) {
+	session, err := c.Client.NewSession()
 	if err != nil {
-		return fmt.Errorf("删除文件 %s 失败: %v , %s", filepath, err, string(out))
+		return nil, fmt.Errorf("New session failed:%w", err)
+	}
+	return newSession(session, c.sftpClt), nil
+}
+
+func (this *Client) Unlink(path string) error {
+	return this.do(
+		func(s *Session) error {
+			out, err := s.CombinedOutput(fmt.Sprintf("unlink %s", path))
+			if err != nil {
+				return fmt.Errorf("unlink 文件 %s 失败: %w", path, fmt.Errorf("%s,%w", out, err))
+			}
+			return nil
+		},
+	)
+}
+
+func (this *Client) UnlinkIfExist(path string) error {
+	return this.do(
+		func(s *Session) error {
+			_, err := this.sftpClt.Lstat(path)
+			if err != nil {
+				if errors.Is(err, os.ErrNotExist) {
+					return nil
+				}
+				return err
+			}
+			return this.Unlink(path)
+		},
+	)
+}
+func (this *Client) PathExist(p string) (exist bool, err error) {
+	_, err = this.sftpClt.Stat(p)
+	if err != nil {
+		if errors.Is(err, os.ErrExist) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
+}
+
+func (this *Client) ExecIfExist(p string, f func() error) (err error) {
+	e, err := this.PathExist(p)
+	if err != nil {
+		return err
+	}
+	if e {
+		return f()
 	}
 	return nil
+}
+
+func (this *Client) RunWithErrOut(cmd string) (err error) {
+	return this.do(
+		func(s *Session) error {
+			b := bytes.Buffer{}
+			s.Stderr = &b
+			err = s.Run(cmd)
+			if err != nil {
+				return err
+				//return fmt.Errorf("执行命令 %s 失败: %w", cmd, fmt.Errorf("%s,%w", b.String(), err))
+			}
+			return nil
+		},
+	)
+}
+
+func (this *Client) ForceRemove(p string) error {
+	return this.RunWithErrOut(fmt.Sprintf("rm -rf %s", p))
 }

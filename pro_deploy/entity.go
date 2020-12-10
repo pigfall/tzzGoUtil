@@ -1,5 +1,9 @@
 package main
 
+import (
+	"fmt"
+)
+
 type Cfg struct {
 	Original   *Node      `json:"original"`
 	ProPkgPath string     `json:"pro_pkg_path"`
@@ -17,4 +21,9 @@ type ProNode struct {
 	Ip        string `json:"ip"`
 	SSHUser   string `json:"ssh_user"`
 	SSHPasswd string `json:"ssh_passwd"`
+}
+
+func (this *ProNode) GetAddr() string {
+	return fmt.Sprintf("%s:22", this.Ip)
+
 }

@@ -57,16 +57,22 @@ func ShowProgress(overChan chan struct{}) {
 }
 
 func main() {
+	var showClean bool
+	var toCleans string
 	var showStartFrom bool
 	var verbose bool
 	var cfgPath string
 	var help bool
+	var clean bool
 	flag.StringVar(&cfgPath, "config", "config.json", "配置文件路径")
 	var startFrom string
 	flag.StringVar(&startFrom, "startFrom", START_FROM_DOWNLOAD_PRO_PKG, "从那一部开始")
 	flag.BoolVar(&verbose, "verbose", false, "verbose output")
 	flag.BoolVar(&showStartFrom, "showStartFrom", false, "showStartFrom")
 	flag.BoolVar(&help, "help", false, "help")
+	flag.BoolVar(&showClean, "showClean", false, "showClean")
+	flag.BoolVar(&clean, "clean", false, "clean")
+	flag.StringVar(&toCleans, "toCleans", "", "toCleans")
 	flag.Parse()
 	if help {
 		flag.Usage()
@@ -118,9 +124,15 @@ func main() {
 		output.Errf("unmarshal config content failed: %v", err)
 		os.Exit(1)
 	}
+	if clean {
+		err := DoCleanCluster(cfg, &cleanFlags{showClean: showClean, toCleans: strings.Split(toCleans, ",")})
+		handleErr(err)
+		return
+	}
 	if len(cfg.ProNodes) == 0 {
 		handleErr(fmt.Errorf("部署节点数目为0"))
 	}
+
 	// > ဈ
 
 	//create ssh client
