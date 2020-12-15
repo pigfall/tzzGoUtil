@@ -116,7 +116,7 @@ func main() {
 	var cfg = &Cfg{}
 	cfgRaw, err := ioutil.ReadFile(cfgPath)
 	if err != nil {
-		output.Err("read config file [%s] failed, %v", err)
+		output.Errf("read config file [%s] failed, %v\n", cfgPath, err)
 		os.Exit(1)
 	}
 	err = json.Unmarshal(cfgRaw, cfg)
