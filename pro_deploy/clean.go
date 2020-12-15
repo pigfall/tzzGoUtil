@@ -29,7 +29,7 @@ type cleanFlags struct {
 
 func DoCleanCluster(cfg *Cfg, cleanFlags *cleanFlags) error {
 	if cleanFlags.showClean {
-		fmt.Println("%v", validItems)
+		fmt.Printf("%v\n", validItems)
 		return nil
 	}
 	for _, node := range cfg.ProNodes {
@@ -105,6 +105,7 @@ func cleanEtcd(session *ssh.Client) error {
 	if err != nil {
 		return err
 	}
+	session.ForceRemove("/etc/eietcd")
 	return nil
 }
 
@@ -123,10 +124,12 @@ func cleanDocker(session *ssh.Client) error {
 	}
 
 	fmt.Println("unlink eidocker")
-	err = session.UnlinkIfExist("/usr/sbin/eidocer")
+	err = session.UnlinkIfExist("/usr/sbin/eidocker")
 	if err != nil {
 		return err
 	}
+
+	session.ForceRemove("/etc/eidocker")
 	return nil
 }
 
@@ -137,13 +140,18 @@ func cleanRammer(session *ssh.Client) error {
 	})
 
 	session.ForceRemove(path.Dir(uninstallRammer))
-	return nil
+
+	return session.UnlinkIfExist("/usr/sbin/rammer")
 }
 
 func cleanEikube(session *ssh.Client) error {
 	// <
 	session.RunWithErrOut("eikube --sure=true deploy-clean")
 	// >
+	session.ForceRemove("/etc/eikube")
+	session.ExecIfExist("/usr/local/eikube/uninstall", func() error {
+		return session.RunWithErrOut(fmt.Sprintf("sh %s", "/usr/local/eikube/uninstall"))
+	})
 	return nil
 }
 
@@ -155,5 +163,13 @@ func cleanDracofs(session *ssh.Client) error {
 			return session.RunWithErrOut(fmt.Sprintf("sh %s", uninstallPath))
 		},
 	)
-	return session.ForceRemove(path.Dir(uninstallPath))
+	err := session.ForceRemove((uninstallPath))
+	if err != nil {
+		return err
+	}
+
+	session.ForceRemove("/etc/dracofs-adm")
+	session.ForceRemove("/etc/dracofs")
+	session.ForceRemove("/usr/sbin/dracofs-adm")
+	return nil
 }

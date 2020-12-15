@@ -219,7 +219,13 @@ func main() {
 	doF(
 		START_FROM_CHANGE_CLUSTER_CFG,
 		func() {
-			err = ioutil.WriteFile(path.Join(uncompressPath, "fhmc-guide-config", "fhmc-guide.configbase.yaml"), []byte(configbase), os.ModePerm)
+			if len(cfg.ClusterVip) == 0 || len(cfg.KubeApiserverVip) == 0 {
+				handleErr(fmt.Errorf("cluster_vip, kube_apiserver 为空"))
+			}
+			configBaseTpl := &ConfigBaseTpl{ClusterVip: cfg.ClusterVip, KubeApiserverVip: cfg.KubeApiserverVip}
+			data, err := configBaseTpl.Marshal()
+			handleErr(err)
+			err = ioutil.WriteFile(path.Join(uncompressPath, "fhmc-guide-config", "fhmc-guide.configbase.yaml"), data, os.ModePerm)
 			handleErr(err)
 		},
 	)

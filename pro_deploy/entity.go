@@ -5,9 +5,11 @@ import (
 )
 
 type Cfg struct {
-	Original   *Node      `json:"original"`
-	ProPkgPath string     `json:"pro_pkg_path"`
-	ProNodes   []*ProNode `json:"pro_nodes"`
+	Original         *Node      `json:"original"`
+	ProPkgPath       string     `json:"pro_pkg_path"`
+	ProNodes         []*ProNode `json:"pro_nodes"`
+	ClusterVip       string     `json:"cluster_vip"`
+	KubeApiserverVip string     `json:"kube_apiserver_vip"`
 }
 
 type Node struct {

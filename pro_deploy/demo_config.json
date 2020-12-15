@@ -25,5 +25,7 @@
             "ssh_user":"root",
             "ssh_passwd":"123456"
         }
-    ]
+    ],
+    "cluster_vip":"172.16.3.85",
+    "kube_apiserver_vip":"172.16.3.86"
 }

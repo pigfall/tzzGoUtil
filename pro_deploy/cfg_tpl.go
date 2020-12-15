@@ -34,18 +34,33 @@ type ProDeployBaseTpl struct {
 }
 
 func (this *ProDeployBaseTpl) Marshal() ([]byte, error) {
-	t, err := template.New("").Parse(pro_deploy_base_tpl)
+	return ParseTpl(this, pro_deploy_base_tpl)
+}
+
+type ConfigBaseTpl struct {
+	ClusterVip       string
+	KubeApiserverVip string
+}
+
+func (this *ConfigBaseTpl) Marshal() ([]byte, error) {
+	return ParseTpl(this, configbase)
+}
+
+func ParseTpl(data interface{}, tpl string) ([]byte, error) {
+	t, err := template.New("").Parse(tpl)
 	if err != nil {
 		return nil, err
 	}
 	buffer := bytes.Buffer{}
-	err = t.Execute(&buffer, this)
+	err = t.Execute(&buffer, data)
 	if err != nil {
 		return nil, err
 	}
 	return buffer.Bytes(), nil
 }
 
+// CLUSTER_VIP: 172.16.2.85
+// KUBE_APISERVER_VIP: 172.16.2.86
 const configbase = `
 dfs:
   DFS_HDD_PATH: /data/vol_*
@@ -56,9 +71,9 @@ k8s:
   CLUSTER_DOMAIN_CN: 根域
   CLUSTER_NAME: pro.cluster101
   CLUSTER_NAME_CN: 微云101
-  CLUSTER_VIP: 172.16.2.85
+  CLUSTER_VIP: {{.ClusterVip}}
   CNI_BUSINESS_VLANS: '172.31.0.0/16'
-  KUBE_APISERVER_VIP: 172.16.2.86
+  KUBE_APISERVER_VIP: {{.KubeApiserverVip}}
   NET_PLUGIN: fhmc-cni-plugins
   REGISTRY_CA_PATH: /root/deploy/ca
 usual:
