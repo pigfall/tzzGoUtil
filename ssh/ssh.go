@@ -55,6 +55,14 @@ func Dial(addr string, cfg *DialCfg) (*Client, error) {
 
 func (c *Client) Copy(local string, remote string) error {
 	c.sftpClt.MkdirAll(path.Dir(remote))
+	if exist, err := c.PathExist(remote); err != nil {
+		return err
+	} else if exist {
+		err = c.ForceRemove(remote)
+		if err != nil {
+			return err
+		}
+	}
 	file, err := c.sftpClt.Create(remote)
 	if err != nil {
 		return err
