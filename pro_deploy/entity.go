@@ -10,6 +10,8 @@ type Cfg struct {
 	ProNodes         []*ProNode `json:"pro_nodes"`
 	ClusterVip       string     `json:"cluster_vip"`
 	KubeApiserverVip string     `json:"kube_apiserver_vip"`
+	StorageType      string     `json:"storage_type"`
+	InternalCNI      string     `json:"internal_cni"`
 }
 
 type Node struct {
@@ -27,5 +29,4 @@ type ProNode struct {
 
 func (this *ProNode) GetAddr() string {
 	return fmt.Sprintf("%s:22", this.Ip)
-
 }

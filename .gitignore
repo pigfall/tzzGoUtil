@@ -1,3 +1,4 @@
 .vscode
 expect/spawn_test.go
 pro_deploy/pro_deploy
+pro_deploy/pro_deploy.arm64

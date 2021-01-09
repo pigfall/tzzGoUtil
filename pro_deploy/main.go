@@ -1,17 +1,22 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/Peanuttown/tzzGoUtil/encoding/yaml"
+	"github.com/Peanuttown/tzzGoUtil/fs"
 	"github.com/Peanuttown/tzzGoUtil/output"
 	"github.com/Peanuttown/tzzGoUtil/process"
 	"github.com/Peanuttown/tzzGoUtil/ssh"
 	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -64,7 +69,9 @@ func main() {
 	var cfgPath string
 	var help bool
 	var clean bool
+	var outDemoCfg bool
 	flag.StringVar(&cfgPath, "config", "config.json", "配置文件路径")
+	flag.BoolVar(&outDemoCfg, "demo", false, "配置文件模板")
 	var startFrom string
 	flag.StringVar(&startFrom, "startFrom", START_FROM_DOWNLOAD_PRO_PKG, "从那一部开始")
 	flag.BoolVar(&verbose, "verbose", false, "verbose output")
@@ -76,6 +83,47 @@ func main() {
 	flag.Parse()
 	if help {
 		flag.Usage()
+		return
+	}
+	if outDemoCfg {
+		fmt.Println(
+			`
+{
+    "original":{
+        "addr":"172.16.1.10:22",
+        "ssh_user":"pstore",
+        "ssh_passwd":"eicas2019"
+    },
+    
+    "pro_pkg_path":"/home/pstore/packages/other/fhmc-pro/fhmc-integration/unstable/amd64/fhmc-integration_v2.4.2.STDmd64-20201127.211823-git.a39e2c.tgz",
+    "pro_nodes":[
+        {
+            "hostname":"host82",
+            "ip":"172.16.2.82",
+            "ssh_user":"root",
+            "ssh_passwd":"123456"
+        },
+        {
+            "hostname":"host83",
+            "ip":"172.16.2.83",
+            "ssh_user":"root",
+            "ssh_passwd":"123456"
+        },
+        {
+            "hostname":"host84",
+            "ip":"172.16.2.84",
+            "ssh_user":"root",
+            "ssh_passwd":"123456"
+        }
+	],
+	"storage_type":"dfs",
+	"cluster_vip":"172.16.3.85",
+	"kube_apiserver_vip":"172.16.3.86",
+	"internal_cni":"flannel"
+}
+			`,
+		)
+
 		return
 	}
 	if showStartFrom {
@@ -171,14 +219,33 @@ func main() {
 	})
 	// > ဈ
 
-	var uncompressPath = path.Join(path.Dir(FHMC_TAR_PATH), strings.TrimSuffix(path.Base(cfg.ProPkgPath), ".tgz"))
+	// < 解析真正的 包名
+	cmd := exec.Command("tar", "-tf", FHMC_TAR_PATH)
+	pipeRd, err := cmd.StdoutPipe()
+	handleErr(err)
+	defer pipeRd.Close()
+	err = cmd.Start()
+	handleErr(err)
+	line, _, err := bufio.NewReader(pipeRd).ReadLine()
+	handleErr(err)
+	pkgDirPath := strings.Split(string(line), "/")[0]
+	cmd.Process.Kill()
+	// >
+
+	//var uncompressPath = path.Join(path.Dir(FHMC_TAR_PATH), strings.TrimSuffix(path.Base(cfg.ProPkgPath), ".tgz"))
+	var uncompressPath = path.Join(path.Dir(FHMC_TAR_PATH), pkgDirPath)
 	var proNodeCfgPath = path.Join(uncompressPath, "fhmc-guide-deploy", "fhmc-guide.role.yaml")
 
 	// < တ export node cfg
 	doF(
 		START_FROM_EXPORT_CFG,
 		func() {
-			err = process.ExecOutput(verboseWriter, os.Stderr, "bash", "-c", fmt.Sprintf("cd %s && ./fhmc-guide deploy-export --storage-type dfs", path.Join(uncompressPath)))
+			switch cfg.StorageType {
+			case "dfs", "gfs", "nfs": // nfs,gfs
+			default:
+				handleErr(fmt.Errorf("目前仅支持 dfs"))
+			}
+			err = process.ExecOutput(verboseWriter, os.Stderr, "bash", "-c", fmt.Sprintf("cd %s && ./fhmc-guide deploy-export --storage-type %s", path.Join(uncompressPath), cfg.StorageType))
 			handleErr(err)
 
 			cfgData, err := ConvertToYamlBytes(cfg.ProNodes)
@@ -216,6 +283,7 @@ func main() {
 
 	// < တ  change cluster cfg
 	// TODO
+	var pathGuideConfig = path.Join(uncompressPath, "fhmc-guide-config")
 	doF(
 		START_FROM_CHANGE_CLUSTER_CFG,
 		func() {
@@ -225,8 +293,46 @@ func main() {
 			configBaseTpl := &ConfigBaseTpl{ClusterVip: cfg.ClusterVip, KubeApiserverVip: cfg.KubeApiserverVip}
 			data, err := configBaseTpl.Marshal()
 			handleErr(err)
-			err = ioutil.WriteFile(path.Join(uncompressPath, "fhmc-guide-config", "fhmc-guide.configbase.yaml"), data, os.ModePerm)
+			err = ioutil.WriteFile(path.Join(pathGuideConfig, "fhmc-guide.configbase.yaml"), data, os.ModePerm)
 			handleErr(err)
+
+			// တ < 修改 configextra
+			configExtraYamlPath := path.Join(pathGuideConfig, "fhmc-guide.configextra.yaml")
+			err = fs.ReadAllThen(configExtraYamlPath, func(ct []byte) error {
+				var configExtra = make(map[string]interface{})
+				err := yaml.UnMarshal(ct, &configExtra)
+				if err != nil {
+					return err
+				}
+
+				switch cfg.InternalCNI {
+				case CNI_CALICO:
+					// check arch
+					if runtime.GOARCH == "arm" {
+						return fmt.Errorf("arm 架构支持支 flannel")
+					}
+				case CNI_FLANNEL:
+				default:
+					return fmt.Errorf("unsupport cni %s. supproted: %v", cfg.InternalCNI, []string{CNI_CALICO, CNI_FLANNEL})
+				}
+
+				if k8sCfg := configExtra["k8s"]; k8sCfg == nil {
+					return fmt.Errorf("fhmc-guide.configextra.yaml 中不存在 key k8s, \n %s \n", ct)
+				} else {
+					k8sCfg.(map[interface{}]interface{})["FHMC_CNI_INTERNAL"] = cfg.InternalCNI
+					data, err := yaml.Marshal(configExtra)
+					if err != nil {
+						return fmt.Errorf("marshal configextra failed")
+					}
+					err = ioutil.WriteFile(configExtraYamlPath, data, os.ModePerm)
+					if err != nil {
+						return fmt.Errorf("修改文件 %s 失败: %w", configExtraYamlPath, err)
+					}
+				}
+				return nil
+			})
+			handleErr(err)
+			// ဈ >
 		},
 	)
 
