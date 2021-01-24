@@ -12,7 +12,7 @@ const callDepth = 3
 const (
 	DEBUG_PREFIX = "DEBUG"
 	ERROR_PREFIX = "ERROR"
-	INFO_PREFIX="INFO"
+	INFO_PREFIX  = "INFO"
 )
 
 type Logger struct {
@@ -23,18 +23,16 @@ func NewLogger() *Logger {
 	return &Logger{l: golog.New(os.Stdout, "", golog.Lshortfile|golog.LstdFlags)}
 }
 
-func (this *Logger) SetOutput(writer io.Writer){
+func (this *Logger) SetOutput(writer io.Writer) {
 	this.l.SetOutput(writer)
 }
-func (this *Logger) Infof(format string,msg ...interface{}) {
-	this.printf(INFO_PREFIX,format,msg...)
+func (this *Logger) Infof(format string, msg ...interface{}) {
+	this.printf(INFO_PREFIX, format, msg...)
 }
 
 func (this *Logger) Info(msg ...interface{}) {
-	this.print(INFO_PREFIX,msg)
+	this.print(INFO_PREFIX, msg)
 }
-
-
 
 func (this *Logger) Error(msg ...interface{}) {
 	this.print(ERROR_PREFIX, msg...)
