@@ -34,6 +34,14 @@ func (this *Logger) Info(msg ...interface{}) {
 	this.print(INFO_PREFIX, msg)
 }
 
+func (this *Logger) Debugf(format string, msg ...interface{}) {
+	this.printf(INFO_PREFIX, format, msg...)
+}
+
+func (this *Logger) Debug(msg ...interface{}) {
+	this.print(INFO_PREFIX, msg)
+}
+
 func (this *Logger) Error(msg ...interface{}) {
 	this.print(ERROR_PREFIX, msg...)
 }
