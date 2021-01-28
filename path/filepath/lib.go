@@ -9,3 +9,7 @@ func DirPath(filepath string) string {
 	dir, _ := std.Split(filepath)
 	return dir
 }
+
+func Join(elems ...string) string {
+	return std.Join(elems...)
+}
