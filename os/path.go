@@ -1,6 +1,7 @@
 package os
 
 import (
+	"fmt"
 	stdos "os"
 	"path/filepath"
 )
@@ -9,7 +10,11 @@ import (
 func GetExecutablePath() (string, error) {
 	p, err := stdos.Executable()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("Get executable path error: %w", err)
 	}
-	return filepath.EvalSymlinks(p)
+	ret, err := filepath.EvalSymlinks(p)
+	if err != nil {
+		return "", fmt.Errorf("Get executable path error: %w", err)
+	}
+	return ret, nil
 }
