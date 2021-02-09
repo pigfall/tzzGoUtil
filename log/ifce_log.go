@@ -7,4 +7,5 @@ type LoggerI interface {
 	Debugf(format string, args ...interface{})
 	Info(msg ...interface{})
 	Infof(format string, msg ...interface{})
+	SetLongOutput()
 }

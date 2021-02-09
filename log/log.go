@@ -58,6 +58,10 @@ func (this *Logger) print(prefix string, msg ...interface{}) {
 	this.l.Output(callDepth, fmt.Sprintln(prefix, ": ", msg))
 }
 
+func (this *Logger) SetLongOutput() {
+	this.l.SetFlags(golog.LstdFlags | golog.Llongfile)
+}
+
 var i *golog.Logger
 
 func init() {

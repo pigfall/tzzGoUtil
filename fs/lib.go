@@ -2,8 +2,10 @@ package fs
 
 import (
 	"errors"
+	tz_filepath "github.com/Peanuttown/tzzGoUtil/path/filepath"
 	"io/ioutil"
 	"os"
+	//"path"
 )
 
 func CreateThen(filepath string, then func(file *os.File) error) error {
@@ -15,7 +17,7 @@ func CreateThen(filepath string, then func(file *os.File) error) error {
 	return then(file)
 }
 func ReadAllThen(filepath string, then func(content []byte) error) error {
-	bytes, err := ioutil.ReadFile(filepath)
+	bytes, err := ReadFile(filepath)
 	if err != nil {
 		return err
 	}
@@ -41,4 +43,28 @@ func FileExist(filepath string) (bool, error) {
 	}
 	return true, nil
 
+}
+
+func ReadFile(filepath string) ([]byte, error) {
+	return ioutil.ReadFile(filepath)
+}
+
+func IsNotExist(err error) bool {
+	return errors.Is(err, os.ErrNotExist)
+}
+
+func WriteFile(filepath string, bytes []byte) error {
+	dir := tz_filepath.DirPath(filepath)
+	_, err := os.Stat(dir)
+	if err != nil {
+		if IsNotExist(err) {
+			err = os.MkdirAll(dir, os.ModePerm)
+			if err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+	}
+	return ioutil.WriteFile(filepath, bytes, os.ModePerm)
 }
