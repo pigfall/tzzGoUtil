@@ -1,5 +1,9 @@
 package log
 
+import (
+	"io"
+)
+
 type LoggerI interface {
 	Error(msg ...interface{})
 	Errorf(format string, msg ...interface{})
@@ -8,4 +12,5 @@ type LoggerI interface {
 	Info(msg ...interface{})
 	Infof(format string, msg ...interface{})
 	SetLongOutput()
+	SetOutput(writer io.Writer)
 }

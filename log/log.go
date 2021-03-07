@@ -23,9 +23,6 @@ func NewLogger() *Logger {
 	return &Logger{l: golog.New(os.Stdout, "", golog.Lshortfile|golog.LstdFlags)}
 }
 
-func (this *Logger) SetOutput(writer io.Writer) {
-	this.l.SetOutput(writer)
-}
 func (this *Logger) Infof(format string, msg ...interface{}) {
 	this.printf(INFO_PREFIX, format, msg...)
 }
@@ -60,6 +57,10 @@ func (this *Logger) print(prefix string, msg ...interface{}) {
 
 func (this *Logger) SetLongOutput() {
 	this.l.SetFlags(golog.LstdFlags | golog.Llongfile)
+}
+
+func (this *Logger) SetOutput(writer io.Writer) {
+	this.l.SetOutput(writer)
 }
 
 var i *golog.Logger
