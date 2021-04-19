@@ -1,6 +1,7 @@
 package certs
 
 import (
+    "io/ioutil"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
@@ -64,5 +65,16 @@ func PemSaveRSAPrivateKey(savePath string, pk *rsa.PrivateKey) error {
 			Bytes: x509.MarshalPKCS1PrivateKey(pk),
 		},
 	)
+}
 
+func PemLoadRSAPrivateKey(filepath string)(privKey *rsa.PrivateKey,err error){
+    var fileContent []byte
+    fileContent,err = ioutil.ReadFile(filepath)
+    if err != nil{
+        return
+    }
+    pemBlock,_ := pem.Decode(fileContent)
+    pemPrivBytes :=pemBlock.Bytes
+    privKey,err = x509.ParsePKCS1PrivateKey(pemPrivBytes)
+    return
 }
