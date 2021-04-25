@@ -1,0 +1,5 @@
+{
+    "out_private_key_path":"/tmp/town_private.key",
+    "out_publick_key_path": "/tmp/town_public.pub",
+    "key_bit_size": 512
+}

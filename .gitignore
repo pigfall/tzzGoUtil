@@ -2,3 +2,5 @@
 expect/spawn_test.go
 pro_deploy/pro_deploy
 pro_deploy/pro_deploy.arm64
+certs/cmd/cert-gen/cert-gen
+jwk/cmd/main
