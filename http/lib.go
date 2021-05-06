@@ -55,7 +55,7 @@ func DoRequestThenJsonUnMarshal(
 }
 
 func DoPostRequestWithXWWWFormUrlEncoded(
-	ctx context.Context, method string, url string, reqBody io.Reader, optionsHeader stdhttp.Header,
+	ctx context.Context, url string, reqBody io.Reader, optionsHeader stdhttp.Header,
 ) (resBody []byte, err error) {
 	optionsHeader.Set("Content-Type", "x-www-form-urlencoded")
 	return DoRequest(
@@ -64,9 +64,9 @@ func DoPostRequestWithXWWWFormUrlEncoded(
 }
 
 func DoPostRequestUrEncode_ThenUnMarshalJson(
-	ctx context.Context, method string, url string, reqBody io.Reader, optionsHeader stdhttp.Header, resEntityToUnMarshal interface{},
+	ctx context.Context, url string, reqBody io.Reader, optionsHeader stdhttp.Header, resEntityToUnMarshal interface{},
 ) error {
-	resBytes, err := DoPostRequestWithXWWWFormUrlEncoded(ctx, method, url, reqBody, optionsHeader)
+	resBytes, err := DoPostRequestWithXWWWFormUrlEncoded(ctx, url, reqBody, optionsHeader)
 	if err != nil {
 		return err
 	}
