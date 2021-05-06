@@ -59,7 +59,7 @@ func DoRequestThenJsonUnMarshal(
 func DoPostRequestWithXWWWFormUrlEncoded(
 	ctx context.Context, url string, params url.Values, optionsHeader stdhttp.Header,
 ) (resBody []byte, err error) {
-	optionsHeader.Set("Content-Type", "x-www-form-urlencoded")
+	optionsHeader.Set("Content-Type", "application/x-www-form-urlencoded")
 	return DoRequest(
 		ctx, stdhttp.MethodPost, url, strings.NewReader(params.Encode()), optionsHeader,
 	)
