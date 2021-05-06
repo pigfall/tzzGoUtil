@@ -1,11 +1,11 @@
 package certs
 
 import (
-    "io/ioutil"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"github.com/Peanuttown/tzzGoUtil/fs"
+	"io/ioutil"
 	"os"
 	"path"
 )
@@ -67,7 +67,7 @@ func PemSaveRSAPrivateKey(savePath string, pk *rsa.PrivateKey) error {
 	)
 }
 
-func PemSaveRSAPublicKey(savePath string,pubKey *rsa.PublicKey)error{
+func PemSaveRSAPublicKey(savePath string, pubKey *rsa.PublicKey) error {
 	os.MkdirAll(path.Dir(savePath), os.ModePerm)
 	file, err := os.Create(savePath)
 	if err != nil {
@@ -77,32 +77,32 @@ func PemSaveRSAPublicKey(savePath string,pubKey *rsa.PublicKey)error{
 	return pem.Encode(
 		file,
 		&pem.Block{
-			Type: PEM_BLOCK_TYPE_RSA_PUBLIC_KEY,
+			Type:  PEM_BLOCK_TYPE_RSA_PUBLIC_KEY,
 			Bytes: x509.MarshalPKCS1PublicKey(pubKey),
 		},
 	)
 }
 
-func PemLoadRSAPrivateKey(filepath string)(privKey *rsa.PrivateKey,err error){
-    var fileContent []byte
-    fileContent,err = ioutil.ReadFile(filepath)
-    if err != nil{
-        return
-    }
-    pemBlock,_ := pem.Decode(fileContent)
-    pemPrivBytes :=pemBlock.Bytes
-    privKey,err = x509.ParsePKCS1PrivateKey(pemPrivBytes)
-    return
+func PemLoadRSAPrivateKey(filepath string) (privKey *rsa.PrivateKey, err error) {
+	var fileContent []byte
+	fileContent, err = ioutil.ReadFile(filepath)
+	if err != nil {
+		return
+	}
+	pemBlock, _ := pem.Decode(fileContent)
+	pemPrivBytes := pemBlock.Bytes
+	privKey, err = x509.ParsePKCS1PrivateKey(pemPrivBytes)
+	return
 }
 
-func PemLoadRSAPublicKey(filepath string)(pubKey *rsa.PublicKey,err error){
-    var fileContent []byte
-    fileContent,err = ioutil.ReadFile(filepath)
-    if err != nil{
-        return
-    }
-    pemBlock,_ := pem.Decode(fileContent)
-    pemPrivBytes :=pemBlock.Bytes
-    pubKey,err = x509.ParsePKCS1PublicKey(pemPrivBytes)
-    return
+func PemLoadRSAPublicKey(filepath string) (pubKey *rsa.PublicKey, err error) {
+	var fileContent []byte
+	fileContent, err = ioutil.ReadFile(filepath)
+	if err != nil {
+		return
+	}
+	pemBlock, _ := pem.Decode(fileContent)
+	pemPrivBytes := pemBlock.Bytes
+	pubKey, err = x509.ParsePKCS1PublicKey(pemPrivBytes)
+	return
 }
