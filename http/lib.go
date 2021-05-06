@@ -7,6 +7,8 @@ import (
 	"io"
 	"io/ioutil"
 	stdhttp "net/http"
+	"net/url"
+	"strings"
 )
 
 func DoRequest(ctx context.Context, method string, url string, reqBody io.Reader, optionsHeader stdhttp.Header) (resBodyBytes []byte, err error) {
@@ -55,18 +57,18 @@ func DoRequestThenJsonUnMarshal(
 }
 
 func DoPostRequestWithXWWWFormUrlEncoded(
-	ctx context.Context, url string, reqBody io.Reader, optionsHeader stdhttp.Header,
+	ctx context.Context, url string, params url.Values, optionsHeader stdhttp.Header,
 ) (resBody []byte, err error) {
 	optionsHeader.Set("Content-Type", "x-www-form-urlencoded")
 	return DoRequest(
-		ctx, stdhttp.MethodPost, url, reqBody, optionsHeader,
+		ctx, stdhttp.MethodPost, url, strings.NewReader(params.Encode()), optionsHeader,
 	)
 }
 
-func DoPostRequestUrEncode_ThenUnMarshalJson(
-	ctx context.Context, url string, reqBody io.Reader, optionsHeader stdhttp.Header, resEntityToUnMarshal interface{},
+func DoPostRequestUrlEncode_ThenUnMarshalJson(
+	ctx context.Context, url string, params url.Values, optionsHeader stdhttp.Header, resEntityToUnMarshal interface{},
 ) error {
-	resBytes, err := DoPostRequestWithXWWWFormUrlEncoded(ctx, url, reqBody, optionsHeader)
+	resBytes, err := DoPostRequestWithXWWWFormUrlEncoded(ctx, url, params, optionsHeader)
 	if err != nil {
 		return err
 	}
