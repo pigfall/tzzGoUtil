@@ -220,7 +220,7 @@ etcd --initial-cluster={{.InitialCluster}} \
 			var remotePath = path.Join(remoteBasePath, path.Base(sync))
 			err = sshClt.Copy(sync, remotePath)
 			if err != nil {
-				output.Err("同步 %s 到 %s 的 %s 失败: %w", sync, mem.Ip, remotePath)
+				output.Errf("同步 %v 到 %v 的 %v 失败: %v", sync, mem.Ip, remotePath,err)
 				os.Exit(1)
 			}
 		}

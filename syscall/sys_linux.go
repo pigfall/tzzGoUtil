@@ -13,7 +13,6 @@ const (
 )
 
 func Syscall() {
-	libnl.LinkAdd()
 	fd, _, e := gosys.RawSyscall(gosys.SYS_SOCKET, uintptr(gosys.AF_NETLINK), uintptr(gosys.SOCK_RAW), uintptr(gosys.NETLINK_ROUTE))
 	if e != 0 {
 		fmt.Println(e.Error())

@@ -31,5 +31,4 @@ func main() {
 		}
 		fmt.Println(string(line[len(line)-5:]))
 	}
-	cmd.Wait()
 }

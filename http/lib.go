@@ -11,6 +11,23 @@ import (
 	"strings"
 )
 
+func ReadResBody(res *stdhttp.Response)([]byte,error){
+	defer res.Body.Close()
+	if res.StatusCode != stdhttp.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			bodyBytes = []byte(fmt.Errorf("Read body data failed: %w", err).Error())
+		}
+		return nil, fmt.Errorf(string(bodyBytes))
+	}
+
+	bodyBytes, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, fmt.Errorf("Read body data failed: %w", err)
+	}
+	return bodyBytes, nil
+}
+
 func DoRequest(ctx context.Context, method string, url string, reqBody io.Reader, optionsHeader stdhttp.Header) (resBodyBytes []byte, err error) {
 	req, err := stdhttp.NewRequest(method, url, reqBody)
 	if err != nil {
