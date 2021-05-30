@@ -16,6 +16,14 @@ type Node struct{
 	value interface{}
 }
 
+func (this *Node) GetParent()*Node{
+	return this.parent
+}
+
+func (this *Node) GetValue()interface{}{
+	return this.value
+}
+
 type TreeBuilderI interface{
 	GetValue(ctx context.Context) (interface{},error)
 	GetChildren(ctx context.Context) ([]TreeBuilderI,error)
@@ -114,3 +122,22 @@ func (this *Tree) ToString(ctx context.Context)string{
 	)
 	return strBuilder.String()
 }
+
+func (this *Tree) DepthFirstDo(ctx context.Context,f func(ctx context.Context,node *Node)error)error{
+	return this.rootNode.DepthFirstDo(ctx,f)
+}
+
+func(this *Node) DepthFirstDo(ctx context.Context,f func(ctx context.Context,node *Node)error)error{
+	err := f(ctx,this)
+	if err!=nil{
+		return err
+	}
+	for _,child := range this.childreen{
+		err := child.DepthFirstDo(ctx,f)
+		if err != nil{
+			return err
+		}
+	}
+	return nil
+}
+
