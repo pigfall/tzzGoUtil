@@ -12,6 +12,10 @@ func IsAlpha(b byte)bool{
     return   ('A' <= b && b<= 'Z') || ('a'<=b && b<='z')
 }
 
+func IsUpperAlpha(b byte) bool{
+	return ('A' <= b && b<= 'Z')
+}
+
 func IsNumber(n byte)bool{
     return  '0' <= n && n<='9'
 }
