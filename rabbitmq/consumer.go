@@ -1,10 +1,9 @@
 package rb
 
 import(
-	"time"
 		"context"
+		"fmt"
 		"github.com/streadway/amqp"
-		"net/url"
 		"github.com/Peanuttown/tzzGoUtil/log"
 )
 
@@ -57,23 +56,5 @@ func  newConnToComsume(
 	cfg *ConnCfg,
 	do func(ctx context.Context,msg amqp.Delivery),
 )(err error){
-	urlToConnect := cfg.ToUrl()
-	conn,err := amqp.Dial(urlToConnect)
-	if err != nil{
-		return err
-	}
-	defer conn.Close()
-	ch,err := conn.Channel()
-	if err != nil{
-		return err
-	}
-	consumeCh,err := ch.Consume()
-	if err != nil{
-		return err
-	}
-	for msg := range consumeCh{
-		do(ctx,msg)
-	}
-
-	return nil
+	return fmt.Errorf("todo")
 }
