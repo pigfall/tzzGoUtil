@@ -2,6 +2,7 @@ package redis
 
 import(
 	gredis "github.com/go-redis/redis/v8"
+	"errors"
 	"fmt"
 	"context"
 )
@@ -51,4 +52,8 @@ func (this *Client) KeyExists(ctx context.Context,key string)(bool,error){
 	}
 
 	return existCount == 1,nil
+}
+
+func ErrRedisReturnNil(err error)bool{
+	return errors.Is(err,gredis.Nil)
 }

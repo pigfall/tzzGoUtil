@@ -9,6 +9,7 @@ import(
 
 
 
+
 type Consumer struct{
 	connCfg  *ConnCfg
 	logger log.LoggerI
