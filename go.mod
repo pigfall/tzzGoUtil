@@ -11,6 +11,7 @@ require (
 	github.com/lestrrat-go/jwx v1.1.7
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.12.0
+	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/vishvananda/netlink v1.1.0
 	go.mongodb.org/mongo-driver v1.3.2
 	golang.org/x/crypto v0.0.0-20201217014255-9d1352758620
