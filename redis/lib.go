@@ -16,11 +16,13 @@ func NewClient(
 	addr string,
 	password string,
 	db int,
+	userName string,
 )(*Client,error){
 	options := gredis.Options{
 		Addr:addr,
 		Password:password,
 		DB:db,
+		Username:userName,
 	}
 	cli:= gredis.NewClient(
 		&options,

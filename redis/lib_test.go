@@ -8,7 +8,7 @@ import(
 
 func testCli()*Client{
 	ctx := context.Background()
-	cli,err := NewClient(ctx,"localhost:6379","",0)
+	cli,err := NewClient(ctx,"localhost:6379","",0,"")
 	if err !=nil{
 		panic(err)
 	}
@@ -17,7 +17,7 @@ func testCli()*Client{
 
 func TestRedisDel(t *testing.T){
 	ctx := context.Background()
-	cli,err := NewClient(ctx,"localhost:6379","",0)
+	cli,err := NewClient(ctx,"localhost:6379","",0,"")
 	if err !=nil{
 		t.Fatal(err)
 	}
@@ -47,7 +47,7 @@ func TestRedisDel(t *testing.T){
 
 func TestRedisLua(t *testing.T){
 	ctx := context.Background()
-	cli,err := NewClient(ctx,"localhost:6379","",0)
+	cli,err := NewClient(ctx,"localhost:6379","",0,"")
 	if err !=nil{
 		t.Fatal(err)
 	}
