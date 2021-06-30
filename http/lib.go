@@ -28,11 +28,8 @@ func ReadResBody(res *stdhttp.Response)([]byte,error){
 	return bodyBytes, nil
 }
 
-func DoRequest(ctx context.Context, method string, url string, reqBody io.Reader, optionsHeader stdhttp.Header) (resBodyBytes []byte, err error) {
-	req, err := stdhttp.NewRequest(method, url, reqBody)
-	if err != nil {
-		return nil, fmt.Errorf("Build http request object failed: %w", err)
-	}
+
+func DoRequestX(ctx context.Context,req *stdhttp.Request,optionsHeader stdhttp.Header)(resBodyBytes []byte,err error){
 	for k, v := range optionsHeader {
 		for _, vv := range v {
 			req.Header.Add(k, vv)
@@ -56,6 +53,28 @@ func DoRequest(ctx context.Context, method string, url string, reqBody io.Reader
 		return nil, fmt.Errorf("Read body data failed: %w", err)
 	}
 	return bodyBytes, nil
+}
+
+func DoRequest(ctx context.Context, method string, url string, reqBody io.Reader, optionsHeader stdhttp.Header) (resBodyBytes []byte, err error) {
+	req, err := stdhttp.NewRequest(method, url, reqBody)
+	if err != nil {
+		return nil, fmt.Errorf("Build http request object failed: %w", err)
+	}
+	return DoRequestX(ctx,req,optionsHeader)
+}
+
+func DoRequestThenJsonUnMarshalX(
+	ctx context.Context,
+	req *stdhttp.Request,
+	resEntityToUnMarshal interface{},
+	optionsHeader stdhttp.Header,
+)(error){
+	resBodyBytes, err := DoRequestX(ctx, req,optionsHeader)
+	fmt.Println("test" , resBodyBytes)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(resBodyBytes, resEntityToUnMarshal)
 }
 
 func DoRequestThenJsonUnMarshal(

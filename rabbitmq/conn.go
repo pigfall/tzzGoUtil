@@ -7,7 +7,7 @@ import(
 )
 
 type Client struct{
-	conn *amqp.Connection
+	*amqp.Connection
 }
 
 
@@ -28,7 +28,7 @@ func NewClient(connCfg *ConnCfg,options ...NewClientOption)(*Client,error){
 	if err != nil{
 		return nil,err
 	}
-	return &Client{conn:conn},nil
+	return &Client{Connection:conn},nil
 }
 
 type ConnCfg struct{
