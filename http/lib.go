@@ -70,7 +70,6 @@ func DoRequestThenJsonUnMarshalX(
 	optionsHeader stdhttp.Header,
 )(error){
 	resBodyBytes, err := DoRequestX(ctx, req,optionsHeader)
-	fmt.Println("test" , resBodyBytes)
 	if err != nil {
 		return err
 	}
