@@ -73,6 +73,7 @@ func DoRequestThenJsonUnMarshalX(
 	if err != nil {
 		return err
 	}
+	fmt.Println(string(resBodyBytes))
 	return json.Unmarshal(resBodyBytes, resEntityToUnMarshal)
 }
 
