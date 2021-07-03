@@ -68,12 +68,15 @@ func DoRequestThenJsonUnMarshalX(
 	req *stdhttp.Request,
 	resEntityToUnMarshal interface{},
 	optionsHeader stdhttp.Header,
+	ifPrintResBody bool,
 )(error){
 	resBodyBytes, err := DoRequestX(ctx, req,optionsHeader)
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(resBodyBytes))
+	if ifPrintResBody{
+		fmt.Println(string(resBodyBytes))
+	}
 	return json.Unmarshal(resBodyBytes, resEntityToUnMarshal)
 }
 
