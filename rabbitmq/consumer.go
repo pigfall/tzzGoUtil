@@ -131,10 +131,11 @@ func  newConnToComsume (
 			}
 			err := do(ctx,&msg)
 			if err != nil{
-				err := msg.Reject(true)
-				if err != nil{
-					logger.Error("Msg Reject")
-				}
+				logger.Error(err)
+				//err := msg.Acknowledger
+				//if err != nil{
+				//	logger.Error("Msg Reject")
+				//}
 				
 			}else{
 				err:= 	msg.Ack(false)
