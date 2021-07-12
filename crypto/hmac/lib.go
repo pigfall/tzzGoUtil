@@ -15,3 +15,12 @@ func EnCryptAndEncodeToHex(secret []byte,contentToEncrypt []byte)(string,error){
 	}
 	return hex.EncodeToString(h.Sum(nil)),nil
 }
+
+func EnCrypt(secret []byte,contentToEncrypt []byte)([]byte,error){
+	h :=stdhmac.New(sha256.New,secret)
+	_,err := h.Write(contentToEncrypt)
+	if err != nil{
+		return nil,err
+	}
+	return h.Sum(nil),nil
+}
