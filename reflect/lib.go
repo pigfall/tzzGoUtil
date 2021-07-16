@@ -9,6 +9,15 @@ type RtRvI interface{
     Kind() reflect.Kind
 }
 
+/*
+func SetValue(entity interface{},field string,value interface{})(err error)
+func IsNumber(rt reflect.Type)bool
+func IsUnsignedNumber(rt reflect.Type)bool
+func IndirectType(rt reflect.Type)(reflect.Type)
+func IndirectValue(rv reflect.Value)(reflect.Value)
+func GetStructName(v interface{}) string 
+*/
+
 
 
 func SetValue(entity interface{},field string,value interface{})(err error){
@@ -67,6 +76,7 @@ func IndirectType(rt reflect.Type)(reflect.Type){
     }
     return rt
 }
+
 func IndirectValue(rv reflect.Value)(reflect.Value){
     if rv.Kind() == reflect.Ptr{
         return  rv.Elem()
@@ -74,4 +84,10 @@ func IndirectValue(rv reflect.Value)(reflect.Value){
     return rv
 }
 
-
+func GetStructName(v interface{}) string {
+    rt := reflect.TypeOf(v)
+    if rt.Kind() == reflect.Ptr{
+        rt = rt.Elem()
+    }
+    return rt.Name()
+}

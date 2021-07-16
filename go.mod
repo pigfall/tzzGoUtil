@@ -6,7 +6,7 @@ require (
 	github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129
 	github.com/go-redis/redis/v8 v8.10.0
 	github.com/google/gopacket v1.1.17
-	github.com/google/uuid v1.2.0 // indirect
+	github.com/google/uuid v1.2.0
 	github.com/lestrrat-go/jwx v1.1.7
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.12.0
