@@ -45,7 +45,7 @@ func DoRequestX(ctx context.Context,req *stdhttp.Request,optionsHeader stdhttp.H
 		if err != nil {
 			bodyBytes = []byte(fmt.Errorf("Read body data failed: %w", err).Error())
 		}
-		return nil, fmt.Errorf(string(bodyBytes))
+		return bodyBytes, fmt.Errorf("httpStatusCode: %v, %s",res.StatusCode,string(bodyBytes))
 	}
 
 	bodyBytes, err := ioutil.ReadAll(res.Body)
@@ -62,6 +62,26 @@ func DoRequest(ctx context.Context, method string, url string, reqBody io.Reader
 	}
 	return DoRequestX(ctx,req,optionsHeader)
 }
+func DoRequestThenJsonUnMarshalAntReturnResBodyData(
+	ctx context.Context,
+	req *stdhttp.Request,
+	resEntityToUnMarshal interface{},
+	optionsHeader stdhttp.Header,
+	ifPrintResBody bool,
+)(resBodyData []byte,err error){
+	resBodyBytes, err := DoRequestX(ctx, req,optionsHeader)
+	if ifPrintResBody{
+		fmt.Println("Response body content:\n ",string(resBodyBytes))
+	}
+	if err != nil {
+		return resBodyBytes,err
+	}
+	err = json.Unmarshal(resBodyBytes, resEntityToUnMarshal)
+	if err != nil{
+		return resBodyBytes,err
+	}
+	return resBodyBytes,nil
+}
 
 func DoRequestThenJsonUnMarshalX(
 	ctx context.Context,
@@ -71,11 +91,11 @@ func DoRequestThenJsonUnMarshalX(
 	ifPrintResBody bool,
 )(error){
 	resBodyBytes, err := DoRequestX(ctx, req,optionsHeader)
+	if ifPrintResBody{
+		fmt.Println("Response body content:\n ",string(resBodyBytes))
+	}
 	if err != nil {
 		return err
-	}
-	if ifPrintResBody{
-		fmt.Println(string(resBodyBytes))
 	}
 	return json.Unmarshal(resBodyBytes, resEntityToUnMarshal)
 }

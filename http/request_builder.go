@@ -9,11 +9,12 @@ import(
 )
 
 type RequestBuilder struct{
-	request *stdhttp.Request
+//	request *stdhttp.Request
 	method string
 	url string
 	paramsToPutBody  paramsToPutBody
 	paramsToPutUrl map[string]string
+	headerToSet map[string]string
 }
 
 func NewRequestBuilder() *RequestBuilder{
@@ -65,6 +66,18 @@ func (this *RequestBuilder) JsonParam(entity interface{})*RequestBuilder{
 	return this
 }
 
+func (this *RequestBuilder) GetParamToPutBody()interface{}{
+	return this.paramsToPutBody
+}
+
+func (this *RequestBuilder) SetHeader(key string,value string)(*RequestBuilder){
+	if this.headerToSet == nil{
+		this.headerToSet = make(map[string]string)
+	}
+	this.headerToSet[key] = value
+	return this
+}
+
 func (this *RequestBuilder) PutParamsToUrl (params map[string]string)*RequestBuilder{
 	if this.paramsToPutUrl == nil{
 		this.paramsToPutUrl = params
@@ -91,6 +104,11 @@ func (this *RequestBuilder) Build(ctx context.Context)(*stdhttp.Request,error){
 	}
 	if this.paramsToPutBody!= nil{
 		req.Header.Set("Content-Type",this.paramsToPutBody.GetContentType())
+	}
+	if this.headerToSet != nil{
+		for k,v := range this.headerToSet{
+			req.Header.Add(k,v)
+		}
 	}
 
 	if this.paramsToPutUrl !=nil{
