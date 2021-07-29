@@ -51,13 +51,20 @@ func (this *RequestBuilder) MethodPost() *RequestBuilder{
 	return this
 }
 
-func (this *RequestBuilder) URL(url string)*RequestBuilder{
-	this.url = url
-	return this
-}
 
 func (this *RequestBuilder) MethodGet() *RequestBuilder{
 	this.method = stdhttp.MethodGet
+	return this
+}
+
+func (this *RequestBuilder) MethodPut() *RequestBuilder{
+	this.method = stdhttp.MethodPut
+	return this
+}
+
+
+func (this *RequestBuilder) URL(url string)*RequestBuilder{
+	this.url = url
 	return this
 }
 

@@ -29,7 +29,8 @@ func ReadResBody(res *stdhttp.Response)([]byte,error){
 }
 
 
-func DoRequestX(ctx context.Context,req *stdhttp.Request,optionsHeader stdhttp.Header)(resBodyBytes []byte,err error){
+func doRequestX(ctx context.Context,req *stdhttp.Request,optionsHeader stdhttp.Header,options ...OptionFiller)(resBodyBytes []byte,err error){
+	ops := newOptions(options...)
 	for k, v := range optionsHeader {
 		for _, vv := range v {
 			req.Header.Add(k, vv)
@@ -40,7 +41,7 @@ func DoRequestX(ctx context.Context,req *stdhttp.Request,optionsHeader stdhttp.H
 		return nil, err
 	}
 	defer res.Body.Close()
-	if res.StatusCode != stdhttp.StatusOK {
+	if res.StatusCode != stdhttp.StatusOK && !ops.StatusCodeOk(res.StatusCode){
 		bodyBytes, err := ioutil.ReadAll(res.Body)
 		if err != nil {
 			bodyBytes = []byte(fmt.Errorf("Read body data failed: %w", err).Error())
@@ -53,6 +54,10 @@ func DoRequestX(ctx context.Context,req *stdhttp.Request,optionsHeader stdhttp.H
 		return nil, fmt.Errorf("Read body data failed: %w", err)
 	}
 	return bodyBytes, nil
+}
+
+func DoRequestX(ctx context.Context,req *stdhttp.Request,optionsHeader stdhttp.Header)(resBodyBytes []byte,err error){
+	return doRequestX(ctx,req,optionsHeader)
 }
 
 func DoRequest(ctx context.Context, method string, url string, reqBody io.Reader, optionsHeader stdhttp.Header) (resBodyBytes []byte, err error) {
@@ -68,8 +73,9 @@ func DoRequestThenJsonUnMarshalAntReturnResBodyData(
 	resEntityToUnMarshal interface{},
 	optionsHeader stdhttp.Header,
 	ifPrintResBody bool,
+	options ...OptionFiller,
 )(resBodyData []byte,err error){
-	resBodyBytes, err := DoRequestX(ctx, req,optionsHeader)
+	resBodyBytes, err := doRequestX(ctx, req,optionsHeader,options...)
 	if ifPrintResBody{
 		fmt.Println("Response body content:\n ",string(resBodyBytes))
 	}
