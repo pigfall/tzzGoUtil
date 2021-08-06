@@ -2,6 +2,7 @@ package xlsx
 
 import(
 		ex "github.com/xuri/excelize/v2"
+		"fmt"
 )
 
 type Excel struct{
@@ -20,4 +21,15 @@ func OpenFile(filepath string)(*Excel,error){
 
 func (this *Excel) GetAllRows(sheet string)([][]string,error){
 	return this.file.GetRows(sheet)
+}
+
+func WriteToFile(filename string,sheetname string, values [][]string)error{
+	file := ex.NewFile()
+	for i,v := range values{
+		err := file.SetSheetRow(sheetname,fmt.Sprintf("A%d",i+1),&v)
+		if err != nil{
+			return err
+		}
+	}
+	return file.SaveAs(filename)
 }

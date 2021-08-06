@@ -4,6 +4,10 @@ import (
 	"io"
 )
 
+type Logger_Log interface{
+	Log(keyvals ...interface{}) error
+}
+
 type LoggerI interface {
 	Error(msg ...interface{})
 	Errorf(format string, msg ...interface{})
