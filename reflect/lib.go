@@ -91,3 +91,14 @@ func GetStructName(v interface{}) string {
     }
     return rt.Name()
 }
+
+func IndirectUntilNonPtr(rv reflect.Value)reflect.Value{
+	var ret = rv
+	for{
+		if ret.Kind() == reflect.Ptr{
+			ret = ret.Elem()
+			continue
+		}
+		return ret
+	}
+}
