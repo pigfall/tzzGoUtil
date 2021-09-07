@@ -16,6 +16,10 @@ func IsUpperAlpha(b byte) bool{
 	return ('A' <= b && b<= 'Z')
 }
 
+func IsLowerAlpha(b byte) bool{
+	return ('a' <= b && b<= 'z')
+}
+
 func IsNumber(n byte)bool{
     return  '0' <= n && n<='9'
 }
@@ -24,23 +28,23 @@ func IsAlphaNum(n byte)bool{
     return IsNumber(n) || IsAlpha(n)
 }
 
-func hasUpper(b byte) bool{
+func HasUpper(b byte) bool{
     return 'a' <= b && b <='z'
 }
 
-func hasLower(b byte) bool{
+func HasLower(b byte) bool{
     return 'A' <= b && b <= 'Z'
 }
 
 func ToLower(b byte) byte{
-    if hasLower(b){
+    if HasLower(b){
         b += 'a' -'A'
     }
     return b
 }
 
 func ToUpper(b byte) byte{
-    if hasUpper(b){
+    if HasUpper(b){
 		b -= 'a' - 'A'
     }
     return b

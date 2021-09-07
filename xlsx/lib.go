@@ -25,6 +25,7 @@ func (this *Excel) GetAllRows(sheet string)([][]string,error){
 
 func WriteToFile(filename string,sheetname string, values [][]string)error{
 	file := ex.NewFile()
+	file.NewSheet(sheetname)
 	for i,v := range values{
 		err := file.SetSheetRow(sheetname,fmt.Sprintf("A%d",i+1),&v)
 		if err != nil{

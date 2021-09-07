@@ -60,6 +60,10 @@ func IsNumber(rt reflect.Type)bool{
         rt.Kind()==reflect.Int 
 }
 
+func IsFloatNumber(rt reflect.Type)bool{
+	return rt.Kind() == reflect.Float32 || rt.Kind() == reflect.Float64
+}
+
 func IsUnsignedNumber(rt reflect.Type)bool{
 	return rt.Kind()==reflect.Uint ||
 	rt.Kind()==reflect.Uint8||
