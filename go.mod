@@ -28,6 +28,8 @@ require (
 	github.com/pkg/sftp v1.12.0
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da // indirect
 	github.com/streadway/amqp v1.0.0
+	github.com/tealeg/xlsx/v3 v3.2.3 // indirect
+	github.com/unidoc/unioffice v1.14.0 // indirect
 	github.com/vishvananda/netlink v1.1.0
 	github.com/xuri/excelize/v2 v2.4.1-0.20210727163809-e9ae9b45b20a
 	go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738 // indirect
