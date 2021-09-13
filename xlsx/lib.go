@@ -38,6 +38,18 @@ func WriteToFile(filename string,sheetname string, values [][]string)error{
 	return file.SaveAs(filename)
 }
 
+func WriteToFileWithSlices(filename string,sheetname string, values [][]interface{})error{
+	file := ex.NewFile()
+	file.NewSheet(sheetname)
+	for i,v := range values{
+		err :=file.SetSheetRow(sheetname,fmt.Sprintf("A%d",i+1),&v)
+		if err != nil{
+			return err
+		}
+	}
+	return file.SaveAs(filename)
+}
+
 func StreamWriteToFile(filename string,sheetname string, values [][]interface{})error{
 	file := ex.NewFile()
 	sheetIndex := file.NewSheet(sheetname)
