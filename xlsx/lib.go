@@ -40,7 +40,8 @@ func WriteToFile(filename string,sheetname string, values [][]string)error{
 
 func StreamWriteToFile(filename string,sheetname string, values [][]interface{})error{
 	file := ex.NewFile()
-	file.NewSheet(sheetname)
+	sheetIndex := file.NewSheet(sheetname)
+	file.SetActiveSheet(sheetIndex)
 	writer, err := file.NewStreamWriter(sheetname)
 	if err != nil{
 		return err
