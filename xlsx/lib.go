@@ -58,6 +58,10 @@ func StreamWriteToFile(filename string,sheetname string, values [][]interface{})
 			return err
 		}
 	}
+	err = writer.Flush()
+	if err != nil{
+		return fmt.Errorf("Flush err when last flush, %w",err)
+	}
 	return file.SaveAs(filename)
 }
 
