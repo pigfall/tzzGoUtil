@@ -59,12 +59,12 @@ func StreamWriteToFile(filename string,sheetname string, values [][]interface{})
 		return err
 	}
 	for i,v := range values{
-		if i+1 % 1000 == 0 {
-			err = writer.Flush()
-			if err != nil {
-				return err
-			}
-		}
+		//if i+1 % 1000 == 0 {
+		//	err = writer.Flush()
+		//	if err != nil {
+		//		return err
+		//	}
+		//}
 		err :=writer.SetRow(fmt.Sprintf("A%d",i+1),v)
 		if err != nil{
 			return err
@@ -72,7 +72,7 @@ func StreamWriteToFile(filename string,sheetname string, values [][]interface{})
 	}
 	err = writer.Flush()
 	if err != nil{
-		return fmt.Errorf("Flush err when last flush, %w",err)
+		return fmt.Errorf("Flush err when  %w",err)
 	}
 	return file.SaveAs(filename)
 }
