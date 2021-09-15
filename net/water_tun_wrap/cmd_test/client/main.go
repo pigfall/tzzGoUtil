@@ -28,7 +28,7 @@ func main() {
 	var serverAddr string
 	var tunIp string
 	flag.StringVar(&serverAddr,"svr","","server address")
-	flag.StringVar(&tunIp,"tun ip","10.10.0.2/16","tunIp")
+	flag.StringVar(&tunIp,"tun ip","172.16.0.2/16","tunIp")
 	flag.Parse()
 	if len(serverAddr) ==0 {
 		fmt.Println("please input server address")

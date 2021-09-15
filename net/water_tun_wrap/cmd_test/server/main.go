@@ -32,7 +32,7 @@ func main() {
 	wg := sync.WaitGroup{}
 
 	// {　create tun interface
-	tun,err := createTun("10.10.0.1/16",logger)
+	tun,err := createTun("172.16.0.1/16",logger)
 	if err != nil{
 		logger.Error(err)
 		os.Exit(1)
