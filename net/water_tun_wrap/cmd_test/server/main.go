@@ -63,7 +63,7 @@ func main() {
 		&wg,
 		func(ctx context.Context){
 			svr := http.NewServeMux()
-			svr.Handle("/",NewConnHandler(logger))
+			svr.Handle("/",NewConnHandler(logger,ctx,msgReadFromTun,msgWillWriteToTun))
 			err :=http.Serve(listener,svr)
 			if err != nil{
 				logger.Error(err)

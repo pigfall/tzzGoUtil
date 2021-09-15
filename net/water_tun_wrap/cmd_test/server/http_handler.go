@@ -13,9 +13,12 @@ import(
 
 
 
-func NewConnHandler(logger log.LoggerLite)http.Handler{
+func NewConnHandler(logger log.LoggerLite,ctx context.Context,msgReadFromTun chan utils.MsgReadFromTun,msgWillWriteToTun chan utils.MsgWillWriteToTun)http.Handler{
 	return &ConnHandler{
 		logger:logger,
+		ctx:ctx,
+		msgReadFromTun:msgReadFromTun,
+		msgWillWriteToTun:msgWillWriteToTun,
 	}
 
 }
@@ -24,6 +27,8 @@ func NewConnHandler(logger log.LoggerLite)http.Handler{
 type ConnHandler struct{
 	logger log.LoggerLite
 	ctx context.Context
+	msgReadFromTun chan utils.MsgReadFromTun
+	msgWillWriteToTun chan utils.MsgWillWriteToTun
 }
 
 
@@ -62,6 +67,31 @@ func (this *ConnHandler)  ServeHTTP(w http.ResponseWriter, req *http.Request){
 			<-ctx.Done()
 			conn.Close()
 			close(msgWillWriteToConn)
+		},
+	)
+	async.AsyncDo(
+		this.ctx,
+		&wg,
+		func(ctx context.Context){
+			utils.HandleDataFromConn(
+				ctx,
+				logger,
+				msgReadFromConn,
+				this.msgWillWriteToTun,
+
+			)
+		},
+	)
+	async.AsyncDo(
+		this.ctx,
+		&wg,
+		func(ctx context.Context){
+			utils.HandleDataFromTun(
+				ctx,
+				logger,
+				this.msgReadFromTun,
+				msgWillWriteToConn,
+			)
 		},
 	)
 	wg.Wait()

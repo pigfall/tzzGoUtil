@@ -68,10 +68,12 @@ func loopWriteToTun(ctx context.Context,logger log.LoggerLite,tun net.TunIfce,ms
 		case <-ctx.Done():
 			return ctx.Err()
 		case msg :=<-msgWillWriteToTun:
-			logger.Debug("Read one msg from TunChannel")
+			logger.Debug("Read one msg from TunChannel, will wirte to tun")
 			_,err := tun.Write(msg)
 			if err != nil{
 				logger.Error(err)
+			}else{
+				logger.Info("Ok write bytes to tun")
 			}
 		}
 	}
