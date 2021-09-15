@@ -27,7 +27,7 @@ func main() {
 	var logger log.LoggerLite= log.NewLogger()
 	var serverAddr string
 	var tunIp string
-	flag.StringVar(&serverAddr,"server address","","server address")
+	flag.StringVar(&serverAddr,"svr","","server address")
 	flag.StringVar(&tunIp,"tun ip","172.168.1.1/16","tunIp")
 	flag.Parse()
 	if len(serverAddr) ==0 {
@@ -44,7 +44,7 @@ func main() {
 		conn,_,err = ws.DefaultDialer.Dial(serverAddr,nil)
 		if err != nil{
 			logger.Errorf("Failed to connect to server %s, %v",serverAddr,err)
-			logger.Info("Will retry after %d second",retryDelaySec)
+			logger.Infof("Will retry after %d second",retryDelaySec)
 			time.Sleep(time.Second* time.Duration(retryDelaySec))
 			continue
 		}
@@ -72,44 +72,67 @@ func main() {
  defer cancel()
  wg := sync.WaitGroup{}
 
-	// < {
+ msgReadFromConn := make(chan []byte,100)
+ msgWillWriteToConn  := make(chan []byte,100)
+	msgWillWriteToTun := make(chan utils.MsgWillWriteToTun,100)
+	msgReadFromTun := make(chan utils.MsgReadFromTun,100)
+	cancelFunc := func(){
+		cancel()
+		close(msgWillWriteToTun )
+		close(msgReadFromTun)
+		close(msgReadFromConn)
+		close(msgWillWriteToConn)
+	}
+	// < keep connection and loop for read write{
 	async.AsyncDo(
 		ctx,
 		&wg,
 		func (ctx context.Context){
 			for{
 				select{
-					ctx.Done()
+				case <-ctx.Done():
+					return
+				default:
 				}
-			serveConnectionRW()
+				err := serveConnectionRW(ctx,logger,serverAddr,msgReadFromConn,msgWillWriteToConn)
+				if err != nil{
+					logger.Error(err)
+				}
 			}
-		}
+		},
 	)
-	serveConnectionRW()
 	// > }
+
+
+	// < loop for read write tun interface
+	async.AsyncDo(
+		ctx,
+		&wg,
+		func (ctx context.Context){
+			utils.LoopRWTun(ctx,logger,tun,msgReadFromTun,msgWillWriteToTun)
+		},
+	)
+	// >
+
 	// < { handle data from tun
 	async.AsyncDo(ctx,&wg,func(ctx context.Context){
-			utils.HandleDataFromTun(ctx,tun,conn)
+			utils.HandleDataFromTun(ctx,logger,msgReadFromTun,msgWillWriteToConn)
 	})
 	// > }
 
-	// < ready msg chan 
-
-	// >
-
 	// < { handle data from connection
 	async.AsyncDo(ctx,&wg,func(ctx context.Context){
-		utils.HandleDataFromConn(ctx,tun,conn)
+		utils.HandleDataFromConn(ctx,logger,msgReadFromConn,msgWillWriteToTun)
 	})
 	// > }
 	notifyTaskOver := make(chan struct{},1)
 	async.AsyncNotifyDone(&wg,notifyTaskOver)
 
 
-	elegantWaitAndQuit(ctx,logger,cancel,&wg,notifyTaskOver)
+	elegantWaitAndQuit(ctx,logger,cancelFunc,&wg,notifyTaskOver)
 }
 
-func elegantWaitAndQuit(ctx context.Context,logger log.LoggerLite,cancel context.CancelFunc,wg *sync.WaitGroup,taskOver chan struct{}){
+func elegantWaitAndQuit(ctx context.Context,logger log.LoggerLite,cancel func(),wg *sync.WaitGroup,taskOver chan struct{}){
 	sig := make(chan os.Signal ,1)
 	signal.Notify(sig,syscall.SIGTERM,syscall.SIGINT)
 	select{
@@ -129,13 +152,13 @@ func elegantWaitAndQuit(ctx context.Context,logger log.LoggerLite,cancel context
 	logger.Info("Quit app")
 }
 
-func serveConnectionRW(ctx context.Context,serverAddr string)error{
+func serveConnectionRW(ctx context.Context,logger log.LoggerLite,serverAddr string,msgReadFromConn chan []byte,msgWillWriteToConn chan []byte)error{
 	var conn *ws.Conn
 	var err error
 	err = ctx_lib.SelectDoUtilSuc(ctx,time.Second*3,
 	func(ctx context.Context)error{
 		var err error
-		conn,err = readyOnceConn(serverAddr)
+		conn,err = readyOnceConn(serverAddr,logger)
 		if err != nil{
 			return err
 		}
@@ -148,8 +171,6 @@ func serveConnectionRW(ctx context.Context,serverAddr string)error{
 	}
 	defer conn.Close()
 
-	var msgReadFromConn = make(chan interface{},100)
-	var msgWillWriteToConn  = make(chan interface{},100)
 
 	// < { read write handle
 	wg := sync.WaitGroup{}
@@ -157,14 +178,14 @@ func serveConnectionRW(ctx context.Context,serverAddr string)error{
 		ctx,
 		&wg,
 		func(ctx context.Context){
-			loopWriteMsgToConn(ctx,conn,msgWillWriteToConn)
+			loopWriteMsgToConn(ctx,logger,conn,msgWillWriteToConn)
 		},
 	)
 	async.AsyncDo(
 		ctx,
 		&wg,
 		func(ctx context.Context){
-			loopReadMsgFromConn(conn,msgReadFromConn)
+			loopReadMsgFromConn(conn,logger,msgReadFromConn)
 		},
 	)
 	wg.Wait()
@@ -173,35 +194,49 @@ func serveConnectionRW(ctx context.Context,serverAddr string)error{
 }
 
 
-func loopWriteMsgToConn(ctx context.Context ,conn *ws.Conn,msgWillWriteToConn chan interface{})error{
+func loopWriteMsgToConn(ctx context.Context,logger log.LoggerLite ,conn *ws.Conn,msgWillWriteToConn chan []byte)error{
 	defer conn.Close()
 	for {
 		select{
 			case <-ctx.Done():
 				return ctx.Err()
-			case <-msgWillWriteToConn:
-				err := conn.WriteMessage()
+			case bytes:= <-msgWillWriteToConn:
+				logger.Debug("Read on msg from Conn Channel, wil write it to conn")
+				err := conn.WriteMessage(ws.BinaryMessage,bytes)
 				if err != nil{
+					logger.Error("Failed to write bytes to connection ",err)
 					return err
 				}
+				logger.Debug("Ok to write bytes conn")
 		}
 	}
 }
 
-func loopReadMsgFromConn(conn *ws.Conn,msgReadFromConn chan interface{})(error){
+func loopReadMsgFromConn(conn *ws.Conn,logger log.LoggerLite,msgReadFromConn chan []byte)(error){
 	defer conn.Close()
 	for {
-		msg,err := conn.ReadMessage()
+		_,msg,err := conn.ReadMessage()
 		if err != nil{
+			logger.Error("Failed to read from conn ",err)
 			return err
 		}
 		// < handle msg
+		logger.Debug("Will send msg to readFromConnChanel ")
 		msgReadFromConn<-msg
+		logger.Debug("OK send msg to readFromConnChanel ")
 		// >
 	}
 }
 
 
-func readyOnceConn(serverAddr string)(*ws.Conn,error){
-	panic("TODO")
+func readyOnceConn(serverAddr string,logger log.LoggerLite)(*ws.Conn,error){
+	logger.Info("Connecing to ",serverAddr)
+	conn,_,err := ws.DefaultDialer.Dial(serverAddr,nil)
+	if err !=nil{
+		logger.Error(fmt.Errorf("Failed to connect to %s, %w",serverAddr,err))
+		return nil,err
+	}
+	logger.Info("Ok to connect to server ", serverAddr)
+
+	return conn,nil
 }

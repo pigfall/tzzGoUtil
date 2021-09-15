@@ -3,30 +3,20 @@ package utils
 
 
 import(
-	ws "github.com/gorilla/websocket"
-	"github.com/Peanuttown/tzzGoUtil/async"
-	"github.com/Peanuttown/tzzGoUtil/net"	
 	"context"
 	"github.com/Peanuttown/tzzGoUtil/log"
 )
 
 
 
-func HandleDataFromConn(ctx context.Context,logger log.LoggerLite,tunMsgChan chan <-interface{},connMsgChan <-chan interface{}){
-	wg := sync.WaitGroup{}
-	async.AsyncDo(
-		ctx,&wg,
-		func(ctx context.Context){
-			for{
-					conn.ReadMessage()
-			}
-		},
-	)
+func HandleDataFromConn(ctx context.Context,logger log.LoggerLite,msgReadFromConn chan []byte,msgWillWriteToTun  chan MsgWillWriteToTun){
 	for{
 		select{
 		case <-ctx.Done():
-			logger.Info("Ctx done")
-		case 
+			logger.Info("HandleDataFromConn ctx done")
+		case msgReadFromConnOne :=<-msgReadFromConn:
+			logger.Info("Read one msg from Conn Channel ")
+			msgWillWriteToTun<-(msgReadFromConnOne)
 		}
 	}
 }
