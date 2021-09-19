@@ -24,3 +24,12 @@ func  AsyncDoWithCancel(ctx context.Context,wg *sync.WaitGroup,do func(ctx conte
 		do(ctx)
 	}(ctx)
 }
+
+
+func AsyncNotifyDone(wg *sync.WaitGroup, ch chan struct{}){
+	go func(){
+		wg.Wait()
+		close(ch)
+	}()
+}
+
