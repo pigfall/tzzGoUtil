@@ -12,8 +12,6 @@ const (
 	TAP
 )
 
-// ip/mask
-type IpWithMask string
 
 func SetIp(devName string, ip IpWithMask) error {
 	_, errOut, err := process.ExeOutput("ip", "addr", "add", string(ip), "dev", devName)

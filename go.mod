@@ -1,4 +1,4 @@
-module github.com/Peanuttown/tzzGoUtil
+module github.com/pigfall/tzzGoUtil
 
 go 1.13
 
