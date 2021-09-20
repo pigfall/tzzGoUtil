@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/Peanuttown/tzzGoUtil/output"
+	"github.com/pigfall/tzzGoUtil/output"
 	"io/ioutil"
 	"net/http"
 	"os/exec"

@@ -26,4 +26,4 @@ require (
 	gopkg.in/yaml.v2 v2.3.0
 )
 
-replace github.com/faiface/beep => github.com/Peanuttown/beep v1.0.3-0.20210306054403-c0ca516fe23e
+replace github.com/faiface/beep => github.com/pigfall/beep v1.0.3-0.20210306054403-c0ca516fe23e

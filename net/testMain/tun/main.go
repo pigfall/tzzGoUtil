@@ -4,9 +4,9 @@ import (
 	gonet "net"
 	"os"
 
-	"github.com/Peanuttown/tzzGoUtil/log"
-	"github.com/Peanuttown/tzzGoUtil/net"
-	"github.com/Peanuttown/tzzGoUtil/net/gopacketUtils"
+	"github.com/pigfall/tzzGoUtil/log"
+	"github.com/pigfall/tzzGoUtil/net"
+	"github.com/pigfall/tzzGoUtil/net/gopacketUtils"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 )
@@ -18,7 +18,14 @@ func main() {
 		log.Error(err)
 		os.Exit(1)
 	}
-	err = net.SetIp(devName, "172.16.2.151/16")
+
+
+	ipWithMask,err := net.FromIpSlashMask("172.16.2.151/16")
+	if err != nil{
+		log.Error(err)
+		os.Exit(1)
+	}
+	err = net.SetIp(devName, *ipWithMask)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)

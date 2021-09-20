@@ -5,7 +5,7 @@ import(
     "unsafe"
     "os"
 	"golang.org/x/sys/unix"
-    "github.com/Peanuttown/tzzGoUtil/process"
+    "github.com/pigfall/tzzGoUtil/process"
 )
 
 func TestIOCtl(t *testing.T){

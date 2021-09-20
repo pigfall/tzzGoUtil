@@ -3,7 +3,7 @@ package log
 import(
 	"io"
 	kit_log "github.com/go-kit/kit/log"
-	timeHelper "github.com/Peanuttown/tzzGoUtil/time"
+	timeHelper "github.com/pigfall/tzzGoUtil/time"
 	"time"
 )
 

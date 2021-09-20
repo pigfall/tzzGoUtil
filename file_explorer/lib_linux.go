@@ -2,7 +2,7 @@ package file_explorer
 
 import (
 	"fmt"
-	//"github.com/Peanuttown/tzzGoUtil/process"
+	//"github.com/pigfall/tzzGoUtil/process"
 )
 
 func OpenExplorer(path string) error {

@@ -2,7 +2,7 @@ package link
 
 import (
 	"fmt"
-	"github.com/Peanuttown/tzzGoUtil/sys/windows"
+	"github.com/pigfall/tzzGoUtil/sys/windows"
 	"sync"
 	"syscall"
 	"time"

@@ -2,7 +2,7 @@ package fs
 
 import (
 	"errors"
-	tz_filepath "github.com/Peanuttown/tzzGoUtil/path/filepath"
+	tz_filepath "github.com/pigfall/tzzGoUtil/path/filepath"
 	"io/ioutil"
 	"os"
 	//"path"

@@ -3,7 +3,7 @@ package net
 import (
     "fmt"
     "testing"
-    "github.com/Peanuttown/tzzGoUtil/process"
+    "github.com/pigfall/tzzGoUtil/process"
 )
 
 // 测试 当 tun,tap 设备消失时 ，与之相关的 路由规则也会消失

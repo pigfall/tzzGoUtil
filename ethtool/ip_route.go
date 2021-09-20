@@ -2,7 +2,7 @@ package ethtool
 
 import(
     "fmt"
-    "github.com/Peanuttown/tzzGoUtil/process"
+    "github.com/pigfall/tzzGoUtil/process"
 )
 
 const(

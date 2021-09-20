@@ -4,7 +4,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"github.com/Peanuttown/tzzGoUtil/fs"
+	"github.com/pigfall/tzzGoUtil/fs"
 	"io/ioutil"
 	"os"
 	"path"

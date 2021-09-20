@@ -2,9 +2,9 @@ package main
 
 import(
 	"fmt"
-	"github.com/Peanuttown/tzzGoUtil/net"	
-	"github.com/Peanuttown/tzzGoUtil/log"	
-	water_wrap "github.com/Peanuttown/tzzGoUtil/net/water_tun_wrap"	
+	"github.com/pigfall/tzzGoUtil/net"	
+	"github.com/pigfall/tzzGoUtil/log"	
+	water_wrap "github.com/pigfall/tzzGoUtil/net/water_tun_wrap"	
 )
 
 

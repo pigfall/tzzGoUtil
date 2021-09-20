@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/Peanuttown/tzzGoUtil/fs"
+	"github.com/pigfall/tzzGoUtil/fs"
 	"github.com/pkg/sftp"
 	gossh "golang.org/x/crypto/ssh"
 	"io"
