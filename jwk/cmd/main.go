@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/Peanuttown/tzzGoUtil/certs"
-	"github.com/Peanuttown/tzzGoUtil/jwk"
+	"github.com/pigfall/tzzGoUtil/certs"
+	"github.com/pigfall/tzzGoUtil/jwk"
 
 	"os"
 )

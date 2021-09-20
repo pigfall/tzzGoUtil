@@ -1,7 +1,7 @@
 package utils
 
 import(
-	"github.com/Peanuttown/tzzGoUtil/log"	
+	"github.com/pigfall/tzzGoUtil/log"	
 	"context"
 )
 

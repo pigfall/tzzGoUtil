@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 	"github.com/streadway/amqp"
-	rb "github.com/Peanuttown/tzzGoUtil/rabbitmq"
+	rb "github.com/pigfall/tzzGoUtil/rabbitmq"
 	"log"
 )
 

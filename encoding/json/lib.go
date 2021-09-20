@@ -1,7 +1,7 @@
 package json
 
 import(
-		"github.com/Peanuttown/tzzGoUtil/encoding"
+		"github.com/pigfall/tzzGoUtil/encoding"
 		std_json"encoding/json"
 )
 

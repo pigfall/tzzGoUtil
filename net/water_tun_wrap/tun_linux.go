@@ -1,8 +1,8 @@
 package water_wrap
 
 import(
-	"github.com/Peanuttown/tzzGoUtil/net"
-	"github.com/Peanuttown/tzzGoUtil/process"
+	"github.com/pigfall/tzzGoUtil/net"
+	"github.com/pigfall/tzzGoUtil/process"
 	"fmt"
 	"github.com/songgao/water"
 )

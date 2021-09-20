@@ -5,7 +5,7 @@ import (
 	"os"
 	"unsafe"
 
-	"github.com/Peanuttown/tzzGoUtil/sys/io"
+	"github.com/pigfall/tzzGoUtil/sys/io"
 	"golang.org/x/sys/unix"
 )
 

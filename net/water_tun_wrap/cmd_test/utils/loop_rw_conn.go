@@ -2,7 +2,7 @@ package utils
 
 import(
 	"context"
-"github.com/Peanuttown/tzzGoUtil/log"		
+"github.com/pigfall/tzzGoUtil/log"		
 	ws "github.com/gorilla/websocket"
 )
 

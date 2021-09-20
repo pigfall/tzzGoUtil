@@ -1,10 +1,10 @@
 package utils
 
 import (
-	"github.com/Peanuttown/tzzGoUtil/net"
+	"github.com/pigfall/tzzGoUtil/net"
 	"sync"
-	"github.com/Peanuttown/tzzGoUtil/log"
-	"github.com/Peanuttown/tzzGoUtil/async"
+	"github.com/pigfall/tzzGoUtil/log"
+	"github.com/pigfall/tzzGoUtil/async"
 	"context"
 )
 

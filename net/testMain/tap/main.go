@@ -5,8 +5,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/Peanuttown/tzzGoUtil/log"
-	tzNet "github.com/Peanuttown/tzzGoUtil/net"
+	"github.com/pigfall/tzzGoUtil/log"
+	tzNet "github.com/pigfall/tzzGoUtil/net"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 )
@@ -18,7 +18,13 @@ func main() {
 		log.Error(err)
 		os.Exit(1)
 	}
-	err = tzNet.SetIp(devName, "172.16.2.151/16")
+	var ipStr string = "172.16.2.151/16"
+	ipWithMask,err := tzNet.FromIpSlashMask(ipStr)
+	if err != nil{
+		log.Error(err)
+		os.Exit(1)
+	}
+	err = tzNet.SetIp(devName, *ipWithMask)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)

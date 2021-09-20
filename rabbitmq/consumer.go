@@ -5,8 +5,8 @@ import(
 		"time"
 		"fmt"
 		"github.com/streadway/amqp"
-		"github.com/Peanuttown/tzzGoUtil/log"
-		"github.com/Peanuttown/tzzGoUtil/uuid"
+		"github.com/pigfall/tzzGoUtil/log"
+		"github.com/pigfall/tzzGoUtil/uuid"
 )
 
 

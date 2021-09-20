@@ -1,7 +1,7 @@
 package net
 
 import (
-	"github.com/Peanuttown/tzzGoUtil/process"
+	"github.com/pigfall/tzzGoUtil/process"
 	"github.com/pkg/errors"
 )
 
@@ -12,11 +12,9 @@ const (
 	TAP
 )
 
-// ip/mask
-type IpWithMask string
 
 func SetIp(devName string, ip IpWithMask) error {
-	_, errOut, err := process.ExeOutput("ip", "addr", "add", string(ip), "dev", devName)
+	_, errOut, err := process.ExeOutput("ip", "addr", "add",ip.FormatAsIpSlashMask(), "dev", devName)
 	if err != nil {
 		return errors.Wrap(err, errOut)
 	}

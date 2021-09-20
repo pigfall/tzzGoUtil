@@ -6,7 +6,7 @@ import(
 	"context"
 	"fmt"
 		"github.com/streadway/amqp"
-		"github.com/Peanuttown/tzzGoUtil/log"
+		"github.com/pigfall/tzzGoUtil/log"
 		"net/url"
 )
 
