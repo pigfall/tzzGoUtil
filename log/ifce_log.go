@@ -4,7 +4,7 @@ import (
 	"io"
 )
 
-type Logger_Log interface{
+type Logger_Log interface {
 	Log(keyvals ...interface{}) error
 }
 
@@ -19,7 +19,7 @@ type LoggerI interface {
 	SetOutput(writer io.Writer)
 }
 
-type LoggerLite interface{
+type LoggerLite interface {
 	Error(msg ...interface{})
 	Errorf(format string, msg ...interface{})
 	Debug(msg ...interface{})
