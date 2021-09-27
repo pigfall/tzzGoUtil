@@ -1,5 +1,8 @@
 package net
 
+import(
+)
+
 
 
 func ForEachAddr(
@@ -41,6 +44,13 @@ func ListIpV4Addrs()([]IpWithMask,error){
 }
 
 
-func IpSubnetCoincide(ip IpWithMask,toCompares []IpWithMask)bool{
-	panic("UNIMPL")
+func IpSubnetCoincideOrCoinCided(ip IpWithMask,toCompares []IpWithMask)bool{
+	var concide bool
+	for _,toCompare := range toCompares {
+		concide = (ip.Contains(&toCompare) || toCompare.Contains(&ip))
+		if concide {
+			return true
+		}
+	}
+	return false
 }

@@ -17,6 +17,17 @@ func (this *IpWithMask) IsIpV4()bool{
 	return IsIpv4(this.Ip)
 }
 
+func (this *IpWithMask) ToIpNet()(*net.IPNet){
+	return &net.IPNet{
+		IP:this.Ip,
+		Mask:this.Mask,
+	}
+}
+
+func (this *IpWithMask) Contains(other *IpWithMask)bool{
+	return this.ToIpNet().Contains(other.Ip)
+}
+
 func (this *IpWithMask) String() (string){
 	onesCount,_:= this.Mask.Size()
 	return fmt.Sprintf("%s/%d",this.Ip.String(),onesCount)
