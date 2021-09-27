@@ -31,6 +31,7 @@ func ListDevices()([]DeviceIfce,error){
 }
 
 
+
 func (this *device) Addrs()([]IpWithMask,error){
 	addrs,err := this.ifce.Addrs()
 	if err != nil{

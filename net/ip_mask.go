@@ -13,6 +13,10 @@ type IpWithMask struct{
 	Mask net.IPMask
 }
 
+func (this *IpWithMask) IsIpV4()bool{
+	return IsIpv4(this.Ip)
+}
+
 func (this *IpWithMask) String() (string){
 	onesCount,_:= this.Mask.Size()
 	return fmt.Sprintf("%s/%d",this.Ip.String(),onesCount)
