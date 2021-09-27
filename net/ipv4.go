@@ -11,6 +11,10 @@ import(
 )
 
 
+func IsIpv4(ip net.IP)(bool){
+	return ip.To4()!= nil
+}
+
 func ParseIPv4(ip string)(net.IP,error){
     elems := strings.Split(ip,".")
     if len(elems) != 4{

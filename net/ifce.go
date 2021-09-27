@@ -11,3 +11,7 @@ type TunIfce interface{
 	SetIp(ip ...string)(err error)
 }
 
+
+type DeviceIfce interface{
+	Addrs()([]IpWithMask,error)
+}
