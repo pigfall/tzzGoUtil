@@ -13,6 +13,7 @@ type IpWithMask struct{
 	Mask net.IPMask
 }
 
+
 func (this *IpWithMask) IsIpV4()bool{
 	return IsIpv4(this.Ip)
 }
@@ -103,3 +104,70 @@ func (this *IpWithMask) FormatAsIpSlashMask()string{
 	return fmt.Sprintf("%s/%d",ipStr,ones)
 }
 
+
+func (this *IpWithMask) BaseIpNet() *IpWithMask{
+	// { TODO
+	if !IsIpv4(this.Ip){
+		panic("TODO, only supported ipv4")
+	}
+	_,cidr,err := net.ParseCIDR(this.FormatAsIpSlashMask())
+	if err != nil{
+		panic(err)
+	}
+	return IpWithMaskFromIpNet(cidr)
+}
+
+func IpWithMaskFromIpNet(ipNet *net.IPNet)*IpWithMask{
+	return &IpWithMask{
+		Ip:ipNet.IP,
+		Mask:ipNet.Mask,
+	}
+}
+
+func (this *IpWithMask) ForEachIpInThisCidr(do func(ipWithMask *IpWithMask)(stop bool,err error))error{
+	_ , ipnet, err := net.ParseCIDR(this.FormatAsIpSlashMask())
+	if err != nil{
+		return err
+	}
+	baseIp := make([]byte,len(ipnet.IP))
+	copy(baseIp,ipnet.IP)
+	baseIpNet := &net.IPNet{
+		IP:baseIp,
+		Mask:ipnet.Mask,
+	}
+	incIp(ipnet.IP)
+	if !baseIpNet.Contains(ipnet.IP){
+		return nil
+	}
+
+	for {
+		ipCopy := make([]byte,len(ipnet.IP))
+		copy(ipCopy,ipnet.IP)
+		incIp(ipnet.IP)
+		if !baseIpNet.Contains(ipnet.IP){
+			break
+		}
+		stop,err := do(IpWithMaskFromIpNet(&net.IPNet{
+			IP:ipCopy,
+			Mask:ipnet.Mask,
+		}))
+		if err != nil{
+			return err
+		}
+		if stop {
+			break
+		}
+	}
+
+	return nil
+}
+
+//  http://play.golang.org/p/m8TNTtygK0
+func incIp(ip net.IP) {
+	for j := len(ip) - 1; j >= 0; j-- {
+		ip[j]++
+		if ip[j] > 0 {
+			break
+		}
+	}
+}
