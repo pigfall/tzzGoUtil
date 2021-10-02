@@ -1,6 +1,7 @@
 package net
 
 import(
+	"sync"
 	"fmt"
 		"strings"
 )
@@ -10,6 +11,7 @@ import(
 type IpPool struct{
 	beenUsed map[string]*IpWithMask
 	baseIpNet *IpWithMask
+	l sync.Mutex
 }
 
 func NewIpPool(ipNet *IpWithMask,hasBeenUsed []*IpWithMask) (*IpPool,error){
@@ -39,3 +41,29 @@ func NewIpPool(ipNet *IpWithMask,hasBeenUsed []*IpWithMask) (*IpPool,error){
 	},nil
 }
 
+
+func (this *IpPool) Take()(*IpWithMask,error){
+	this.l.Lock()
+	defer this.l.Unlock()
+	var take *IpWithMask
+	this.baseIpNet.ForEachIpInThisCidr(
+		func(ipNet *IpWithMask)(stop bool,err error){
+			if used  := this.beenUsed[ipNet.FormatAsIpSlashMask()];used != nil{
+				return false,nil
+			}
+			take =ipNet
+			return true,nil
+		},
+	)
+	if take == nil{
+		return nil,fmt.Errorf("No Aviable ip is this ip pool")
+	}
+
+	return take,nil
+}
+
+func (this *IpPool) Release(ipNet *IpWithMask){
+	this.l.Lock()
+	defer this.l.Unlock()
+	delete(this.beenUsed,ipNet.FormatAsIpSlashMask())
+}
