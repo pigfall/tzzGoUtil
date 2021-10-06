@@ -44,10 +44,10 @@ func ListIpV4Addrs()([]IpWithMask,error){
 }
 
 
-func IpSubnetCoincideOrCoinCided(ip IpWithMask,toCompares []IpWithMask)bool{
+func IpSubnetCoincideOrCoinCided(ip *IpWithMask,toCompares []IpWithMask)bool{
 	var concide bool
 	for _,toCompare := range toCompares {
-		concide = (ip.Contains(&toCompare) || toCompare.Contains(&ip))
+		concide = (ip.Contains(&toCompare) || toCompare.Contains(ip))
 		if concide {
 			return true
 		}
