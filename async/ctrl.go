@@ -8,6 +8,7 @@ import(
 type Ctrl struct{
 	wg sync.WaitGroup
 	cancels []func()
+	onRoutineQuit func()
 }
 
 
@@ -19,17 +20,22 @@ func (this *Ctrl) AsyncDo(
 ){
 	this.wg.Add(1)
 	go func(ctx context.Context){
-		defer this.wg.Done()
+		defer func(){
+			if this.onRoutineQuit != nil{
+				this.onRoutineQuit()
+			}
+			this.wg.Done()
+		}()
 		do(ctx)
 	}(ctx)
 
 }
 
-func (this *Ctrl) AppendCancelFunc(cancel func()){
+func (this *Ctrl) AppendCancelFuncs(cancels ...func()){
 	if this.cancels == nil{
-		this.cancels = []func(){cancel}
+		this.cancels = cancels
 	}else{
-		this.cancels = append(this.cancels,cancel)
+		this.cancels = append(this.cancels,cancels...)
 	}
 
 }
@@ -43,4 +49,8 @@ func (this *Ctrl) Cancel(){
 
 func (this *Ctrl) Wait(){
 	this.wg.Wait()
+}
+
+func (this *Ctrl) OnRoutineQuit(f func()){
+	this.onRoutineQuit = f
 }
