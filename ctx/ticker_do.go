@@ -9,6 +9,10 @@ import (
 
 
 func TickerDo(ctx context.Context,tickerDuration time.Duration,do func()error)(error){
+	err :=do()
+	if err != nil{
+		return err
+	}
 	ticker := time.NewTicker(tickerDuration)
 	defer ticker.Stop()
 	for{
