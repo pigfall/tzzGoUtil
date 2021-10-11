@@ -118,6 +118,9 @@ func (this *IpWithMask) BaseIpNet() *IpWithMask{
 }
 
 func IpWithMaskFromIpNet(ipNet *net.IPNet)*IpWithMask{
+	if ipNet == nil{
+		return nil
+	}
 	return &IpWithMask{
 		Ip:ipNet.IP,
 		Mask:ipNet.Mask,
@@ -171,3 +174,5 @@ func incIp(ip net.IP) {
 		}
 	}
 }
+
+
