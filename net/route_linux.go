@@ -17,6 +17,14 @@ func AddRouteIpNet(target *IpWithMask,devName string,via net.IP)error{
 	return addRoute(target.FormatAsIpSlashMask(),devName,via)
 }
 
+func DelRoute(target net.IP)error{
+	_,errOut,err := process.ExeOutput("ip","route","del",target.String())
+	if err != nil{
+		return fmt.Errorf("Del route to %s failed %v, %v",target.String(),err,errOut)
+	}
+	return nil
+}
+
 func addRoute(target string,devName string,via net.IP)error{
 	var errOut string
 	var err error
@@ -75,3 +83,4 @@ func RouteList()([]*RouteRule,error){
 
 	return rules,nil
 }
+
