@@ -9,7 +9,6 @@ import(
 
 type tun struct {
 	ifce *water.Interface
-
 }
 
 func NewTun() (net.TunIfce,error){
@@ -35,18 +34,22 @@ func(this *tun)Read(p []byte) (n int, err error){
 func(this *tun)Close() error{
 	return this.ifce.Close()
 }
-func(this *tun)Name() string{
-	return this.ifce.Name()
+func(this *tun)Name() (string,error){
+	return this.ifce.Name(),nil
 }
 
 func (this *tun) SetIp(ip ...string)error{
+	devName,err := this.Name()
+	if err != nil{
+		return err
+	}
 	_,errOut,err := process.ExeOutput(
 		"ip",
 		"addr",
 		"add",
 		ip[0],
 		"dev",
-		this.Name(),
+		devName,
 	)
 	if err != nil{
 		return fmt.Errorf("Set ip failed: %v, %v",err,errOut)
@@ -56,7 +59,7 @@ func (this *tun) SetIp(ip ...string)error{
 		"ip",
 		"link",
 		"set",
-		this.Name(),
+		devName,
 		"up",
 	)
 	if err != nil{

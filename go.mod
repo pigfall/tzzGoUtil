@@ -19,11 +19,13 @@ require (
 	github.com/vishvananda/netlink v1.1.0
 	github.com/xuri/excelize/v2 v2.4.1-0.20210727163809-e9ae9b45b20a
 	go.mongodb.org/mongo-driver v1.3.2
-	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
-	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
-	golang.org/x/sys v0.0.0-20210910150752-751e447fb3d0
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6
 	golang.org/x/text v0.3.7 // indirect
+	golang.zx2c4.com/wireguard v0.0.0-00010101000000-000000000000
 	gopkg.in/yaml.v2 v2.3.0
 )
 
 replace github.com/faiface/beep => github.com/pigfall/beep v1.0.3-0.20210306054403-c0ca516fe23e
+
+replace golang.zx2c4.com/wireguard => ../wintun-go

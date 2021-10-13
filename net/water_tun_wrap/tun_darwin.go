@@ -39,6 +39,6 @@ func (this *tun) Close() error {
 	return this.ifce.Close()
 }
 
-func (this *tun) Name() string{
-	return this.ifce.Name()
+func (this *tun) Name() (string,error){
+	return this.ifce.Name(),nil
 }
