@@ -31,3 +31,14 @@ func TestIpWithMaskForEach(t *testing.T){
 
 	}
 }
+
+func TestMaskFormatTo255(t *testing.T){
+	ipMask,err := FromIpSlashMask("10.8.0.1/24")
+	if err != nil{
+		t.Fatal(err)
+	}
+	s := MaskFormatTo255(ipMask.Mask)
+	if s != "255.255.255.0"{
+		t.Fatal("failed")
+	}
+}

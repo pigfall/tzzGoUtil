@@ -14,6 +14,7 @@ type IpWithMask struct{
 }
 
 
+
 func (this *IpWithMask) IsIpV4()bool{
 	return IsIpv4(this.Ip)
 }
@@ -176,3 +177,12 @@ func incIp(ip net.IP) {
 }
 
 
+
+// 255.255.0.0
+func MaskFormatTo255(mask net.IPMask)string{
+	var elems = make([]string,0,len(mask))
+	for _,m := range mask{
+		elems = append(elems,fmt.Sprintf("%d",int(m)))
+	}
+	return strings.Join(elems,".")
+}
