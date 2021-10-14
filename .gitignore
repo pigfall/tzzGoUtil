@@ -4,3 +4,7 @@ pro_deploy/pro_deploy
 pro_deploy/pro_deploy.arm64
 certs/cmd/cert-gen/cert-gen
 jwk/cmd/main
+net/wintun/examples/rsrc_windows_amd64.syso
+net/wintun/examples/examples.exe
+net/wintun/examples/wintun.dll
+
