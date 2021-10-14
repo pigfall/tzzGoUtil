@@ -5,20 +5,20 @@ import(
 )
 
 func AddRoute(target net.IP,devName string,via net.IP)error{
-	panic("TODO")
+	 panic("TODO")
 }
 
 func AddRouteIpNet(target *IpWithMask,devName string,via net.IP)error{
-	panic("TODO")
+	 panic("TODO")
 }
 
 func DelRoute(target net.IP)error{
-	panic("TODO")
+	 panic("TODO")
 }
 
 
 func GetDefaultRouteRule()(*RouteRule,error){
-	panic("TODO")
+	 panic("TODO")
 }
 
 func RouteList()([]*RouteRule,error){
