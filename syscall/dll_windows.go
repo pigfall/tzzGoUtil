@@ -1,7 +1,9 @@
 package syscall
 
 import(
+	"errors"
 	"syscall"
+		"golang.org/x/sys/windows"
 )
 
 
@@ -37,8 +39,13 @@ func (this *DLL) FindProcure(produreName string)(*Procdure,error){
 
 func (this *Procdure) Call(a ...uintptr)(r1,r2 uintptr,err error){
 	r1,r2,err = this.Proc.Call(a...)
-	if r1 == 0{
-		return  r1,r2,err
+	if err == nil{
+		return r1,r2,err
+	}else{
+		if errors.Is(err,windows.ERROR_SUCCESS){
+			return r1,r2,nil
+		}else{
+			return r1,r2,err
+		}
 	}
-	return r1,r2,nil
 }
