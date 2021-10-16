@@ -15,21 +15,4 @@ type MIB_IPFORWARDTABLE struct {
 	Table        []MIB_IPFORWARDROW
 }
 
-type MIB_IPFORWARDROW struct {
-	DwForwardDest      DWORD
-	DwForwardMask      DWORD
-	DwForwardPolicy    DWORD
-	DwForwardNextHop   DWORD
-	DwForwardIfIndex   IF_INDEX
-	ForwardType        MIB_IPFORWARD_TYPE
-	ForwardProto       MIB_IPFORWARD_PROTO
-	DwForwardAge       DWORD
-	DwForwardNextHopAS DWORD
-	DwForwardMetric1   DWORD
-	DwForwardMetric2   DWORD
-	DwForwardMetric3   DWORD
-	DwForwardMetric4   DWORD
-	DwForwardMetric5   DWORD
-}
-
 type PMIB_IPFORWARDTABLE *MIB_IPFORWARDTABLE

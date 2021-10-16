@@ -1,8 +1,6 @@
 package winsys
 
 import (
-	"encoding/binary"
-	"net"
 	"testing"
 )
 
@@ -18,8 +16,8 @@ func TestGetIpForwardTable(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, row := range rows {
-		dst := make([]byte, 4)
-		binary.LittleEndian.PutUint32(dst, uint32(row.DwForwardDest))
-		t.Logf("dst %s", net.IPv4(dst[0], dst[1], dst[2], dst[3]).String())
+		t.Logf("dst %s", row.Dst().FormatAsIpSlashMask())
+		t.Logf("gateway %v", row.Gateway())
+		t.Logf("ifceIndex %v", row.SrcDevIndex())
 	}
 }
