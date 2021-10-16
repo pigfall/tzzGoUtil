@@ -1,6 +1,6 @@
 module github.com/pigfall/tzzGoUtil
 
-go 1.13
+go 1.17
 
 require (
 	github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129
