@@ -2,7 +2,9 @@ package net
 
 import (
 	"fmt"
+	"log"
 	"net"
+	"strconv"
 
 	"github.com/pigfall/tzzGoUtil/process"
 	"github.com/pigfall/tzzGoUtil/syscall/winsys"
@@ -17,12 +19,47 @@ func AddRoute(target net.IP, devIndex string, via net.IP) error {
 
 // route ADD destination_network MASK subnet_mask  gateway_ip metric_cost
 func addRoute(dstIp net.IP, mask net.IPMask, devIndex string, gateway net.IP) error {
+	log.Println("devIndex ", devIndex)
+	devIndexInt, err := strconv.ParseInt(devIndex, 10, 64)
+	if err != nil {
+		return err
+	}
+	netIfce, err := FindIfceByIndex(int(devIndexInt))
+	if err != nil {
+		return err
+	}
+	addrs, err := netIfce.Addrs()
+	if err != nil {
+		return err
+	}
+	var srcIpObj net.IP
+	for _, addr := range addrs {
+		ip, _, err := net.ParseCIDR(addr.String())
+		if err != nil {
+			return err
+		}
+		if IsIpv4(ip) {
+			srcIpObj = ip
+			break
+		}
+	}
+
+	if srcIpObj == nil {
+		panic(fmt.Errorf("not found ipv4 on interfce %v", devIndex))
+	}
+
+	_ = srcIpObj.String()
+
+	fmt.Println("addRoute")
 	var out, errOut string
-	var err error
 	if gateway == nil {
-		out, errOut, err = process.ExeOutput("route", "add", dstIp.String(), "MASK", MaskFormatTo255(mask), "IF", devIndex)
+		cmds := []string{"route", "add", dstIp.String(), "MASK", MaskFormatTo255(mask), "0.0.0.0", "if", devIndex}
+		log.Println(cmds)
+		out, errOut, err = process.ExeOutput(cmds[0], cmds[1:]...)
 	} else {
-		out, errOut, err = process.ExeOutput("route", "add", dstIp.String(), "MASK", MaskFormatTo255(mask), "gateway", gateway.String(), "IF", devIndex)
+		cmds := []string{"route", "add", dstIp.String(), "MASK", MaskFormatTo255(mask), gateway.String(), "if", devIndex}
+		log.Println(cmds)
+		out, errOut, err = process.ExeOutput(cmds[0], cmds[1:]...)
 	}
 	if err != nil {
 		return fmt.Errorf("%v, %v,%v", err, out, errOut)
@@ -31,10 +68,12 @@ func addRoute(dstIp net.IP, mask net.IPMask, devIndex string, gateway net.IP) er
 }
 
 func AddRouteIpNet(target *IpWithMask, devIndex string, via net.IP) error {
+	log.Println("devIndex ", devIndex)
 	return addRoute(target.Ip, target.Mask, devIndex, via)
 }
 
 func DelRoute(target net.IP) error {
+	return nil
 	panic("TODO")
 }
 
