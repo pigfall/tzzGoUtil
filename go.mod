@@ -20,7 +20,6 @@ require (
 	go.mongodb.org/mongo-driver v1.3.2
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6
-	golang.zx2c4.com/wireguard v0.0.0-00010101000000-000000000000
 	gopkg.in/yaml.v2 v2.3.0
 )
 
@@ -64,5 +63,3 @@ require (
 )
 
 replace github.com/faiface/beep => github.com/pigfall/beep v1.0.3-0.20210306054403-c0ca516fe23e
-
-replace golang.zx2c4.com/wireguard => ../wintun-go
