@@ -20,3 +20,16 @@ func UDPListen(ipToListen net.IP,port int)(*UDPSock,error){
 		UDPConn:udpSock,
 	},nil
 }
+
+func UDPDial(remoteIp net.IP,port int)(*UDPSock,error){
+	conn,err := net.DialUDP("udp",nil,&net.UDPAddr{
+		IP:remoteIp,
+		Port:port,
+	})
+	if err != nil{
+		return nil,err
+	}
+	return &UDPSock{
+		UDPConn:conn,
+	},nil
+}
