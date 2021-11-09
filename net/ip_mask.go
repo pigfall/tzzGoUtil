@@ -7,6 +7,22 @@ import(
 		"strings"
 )
 
+//eg: 127.0.0.1:80
+// {
+type IpPortFormat string
+
+func IpPortFormatFromIpPort(ip net.IP,port int)IpPortFormat{
+	return IpPortFormat(fmt.Sprintf("%s:%d",ip.String(),port))
+}
+// }
+
+
+//eg: 127.0.0.1
+type IpFormat string
+
+//eg: 127.0.0.1/8
+type IpNetFormat string
+
 
 type IpWithMask struct{
 	Ip net.IP
@@ -14,9 +30,16 @@ type IpWithMask struct{
 }
 
 
+func (this *IpWithMask) ToIpNetFormat()(IpNetFormat){
+	return IpNetFormat(this.FormatAsIpSlashMask())
+}
 
 func (this *IpWithMask) IsIpV4()bool{
 	return IsIpv4(this.Ip)
+}
+
+func (this *IpWithMask) IpFormat()IpFormat{
+	return IpFormat(fmt.Sprintf("%s",this.Ip.String()))
 }
 
 func (this *IpWithMask) ToIpNet()(*net.IPNet){
