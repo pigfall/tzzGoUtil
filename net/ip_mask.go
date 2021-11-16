@@ -16,6 +16,15 @@ func IpPortFormatFromIpPort(ip net.IP,port int)IpPortFormat{
 }
 // }
 
+type IpPort struct{
+	IP net.IP
+	Port int
+}
+
+func (this *IpPort) ToString() string{
+	return fmt.Sprintf("%s:%v",this.IP.String(),this.Port)
+}
+
 
 //eg: 127.0.0.1
 type IpFormat string
@@ -29,6 +38,11 @@ type IpWithMask struct{
 	Mask net.IPMask
 }
 
+
+func (this *IpWithMask) ToString()(string){
+	return string(this.ToIpNetFormat())
+
+}
 
 func (this *IpWithMask) ToIpNetFormat()(IpNetFormat){
 	return IpNetFormat(this.FormatAsIpSlashMask())

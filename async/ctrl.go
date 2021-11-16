@@ -8,7 +8,13 @@ import(
 type Ctrl struct{
 	wg sync.WaitGroup
 	cancels []func()
-	onRoutineQuit func()
+	onRoutineQuit func(jobName string)
+}
+
+func NewCtrl()*Ctrl{
+	return &Ctrl{
+		cancels:make([]func(),0),
+	}
 }
 
 
@@ -16,13 +22,14 @@ type Ctrl struct{
 
 func (this *Ctrl) AsyncDo(
 	ctx context.Context,
+	jobName string,
 	do func(ctx context.Context),
 ){
 	this.wg.Add(1)
 	go func(ctx context.Context){
 		defer func(){
 			if this.onRoutineQuit != nil{
-				this.onRoutineQuit()
+				this.onRoutineQuit(jobName)
 			}
 			this.wg.Done()
 		}()
@@ -51,6 +58,11 @@ func (this *Ctrl) Wait(){
 	this.wg.Wait()
 }
 
-func (this *Ctrl) OnRoutineQuit(f func()){
+func (this *Ctrl) OnRoutineQuit(f func(jobName string)){
 	this.onRoutineQuit = f
+}
+
+func (this *Ctrl) WaitCtx(ctx context.Context,doWhenCtxDone func()){
+	<-ctx.Done()
+	doWhenCtxDone()
 }
