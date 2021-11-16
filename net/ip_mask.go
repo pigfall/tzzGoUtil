@@ -21,6 +21,35 @@ type IpPort struct{
 	Port int
 }
 
+// format x.x.x.x:8
+func IpPortFromString(format string)(*IpPort,error){
+	lastColumnIndex := strings.LastIndex(format,":")
+	if lastColumnIndex<0{
+		return nil,fmt.Errorf("Invalid ipPort format %s",format)
+	}
+	ip := format[:lastColumnIndex]
+	ipObj:=net.ParseIP(ip)
+	if ipObj == nil{
+		return nil,fmt.Errorf("Invalid ipPort format %s",format)
+	}
+	port := format[lastColumnIndex+1:]
+	portInt,err := strconv.ParseUint(port,10,64)
+	if err != nil{
+		return nil,fmt.Errorf("Invalid ipPort format %s",format)
+	}
+
+	return &IpPort{
+		IP:ipObj,
+		Port:int(portInt),
+	},nil
+
+
+}
+
+func (this *IpPort) ToIpPortFormat()IpPortFormat{
+	return IpPortFormat(fmt.Sprintf("%s:%d",this.IP.String(),this.Port))
+}
+
 func (this *IpPort) ToString() string{
 	return fmt.Sprintf("%s:%v",this.IP.String(),this.Port)
 }
@@ -223,3 +252,4 @@ func MaskFormatTo255(mask net.IPMask)string{
 	}
 	return strings.Join(elems,".")
 }
+
