@@ -51,6 +51,15 @@ func (this *RequestBuilder) MethodPost() *RequestBuilder{
 	return this
 }
 
+func (this *RequestBuilder) MethodPatch() *RequestBuilder{
+	this.method = stdhttp.MethodPatch
+	return this
+}
+
+func (this *RequestBuilder) MethodDelete() *RequestBuilder{
+	this.method = stdhttp.MethodDelete
+	return this
+}
 
 func (this *RequestBuilder) MethodGet() *RequestBuilder{
 	this.method = stdhttp.MethodGet
