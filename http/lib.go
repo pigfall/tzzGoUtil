@@ -89,6 +89,7 @@ func DoRequestThenJsonUnMarshalAntReturnResBodyData(
 	return resBodyBytes,nil
 }
 
+
 func DoRequestThenJsonUnMarshalX(
 	ctx context.Context,
 	req *stdhttp.Request,
@@ -105,6 +106,7 @@ func DoRequestThenJsonUnMarshalX(
 	}
 	return json.Unmarshal(resBodyBytes, resEntityToUnMarshal)
 }
+
 
 func DoRequestThenJsonUnMarshal(
 	ctx context.Context,

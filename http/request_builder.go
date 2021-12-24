@@ -28,17 +28,31 @@ type paramsToPutBody interface{
 
 type jsonParam struct{
 	entity interface{}
+	marshal func(v interface{})([]byte,error)
 }
 
 func newJsonParam(entity interface{}) paramsToPutBody{
 	return &jsonParam{entity:entity}
 }
 
+func withJsonParam(entity interface{},marshalFunc func(v interface{})([]byte,error))paramsToPutBody{
+	return &jsonParam{
+		entity:entity,
+		marshal:marshalFunc,
+	}
+}
+
 func (this *jsonParam) GetContentType()string{
 	return "application/json"
 }
 func (this *jsonParam)GetParamReader()(io.Reader,error){
-	bytes,err := json.Marshal(this.entity)
+	var bytes []byte
+	var err error
+	var marshal = json.Marshal
+	if this.marshal != nil{
+		marshal = this.marshal
+	}
+	bytes,err = marshal(this.entity)
 	if err != nil{
 		return nil,err
 	}
@@ -79,6 +93,11 @@ func (this *RequestBuilder) URL(url string)*RequestBuilder{
 
 func (this *RequestBuilder) JsonParam(entity interface{})*RequestBuilder{
 	this.paramsToPutBody= newJsonParam(entity)
+	return this
+}
+
+func (this *RequestBuilder) JsonParamWithMarshalFunc(entity interface{},marshal func(v interface{})([]byte,error))*RequestBuilder{
+	this.paramsToPutBody = withJsonParam(entity,marshal)
 	return this
 }
 
