@@ -67,6 +67,30 @@ func DoRequest(ctx context.Context, method string, url string, reqBody io.Reader
 	}
 	return DoRequestX(ctx,req,optionsHeader)
 }
+
+func DoRequestThenJsonUnMarshalAntReturnResBodyDataWithUnmarshal(
+	ctx context.Context,
+	unmarshal func([]byte,interface{})error,
+	req *stdhttp.Request,
+	resEntityToUnMarshal interface{},
+	optionsHeader stdhttp.Header,
+	ifPrintResBody bool,
+	options ...OptionFiller,
+)(resBodyBytes []byte,err error){
+	resBodyBytes, err = doRequestX(ctx, req,optionsHeader,options...)
+	if ifPrintResBody{
+		fmt.Println("Response body content:\n ",string(resBodyBytes))
+	}
+	if err != nil {
+		return resBodyBytes,err
+	}
+	err = unmarshal(resBodyBytes, resEntityToUnMarshal)
+	if err != nil{
+		return resBodyBytes,err
+	}
+	return resBodyBytes,nil
+}
+
 func DoRequestThenJsonUnMarshalAntReturnResBodyData(
 	ctx context.Context,
 	req *stdhttp.Request,

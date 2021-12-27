@@ -14,3 +14,11 @@ func GenUUID() (string, error) {
   return id.String(), nil    
 }    
 
+
+func GenUUIDIfFailedGetEmpty()string{
+	s,err := GenUUID()
+	if err != nil{
+		return ""
+	}
+	return s
+}
