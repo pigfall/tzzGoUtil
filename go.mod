@@ -19,7 +19,7 @@ require (
 	github.com/xuri/excelize/v2 v2.4.1-0.20210727163809-e9ae9b45b20a
 	go.mongodb.org/mongo-driver v1.3.2
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
-	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6
+	golang.org/x/sys v0.1.0
 	gopkg.in/yaml.v2 v2.3.0
 )
 
